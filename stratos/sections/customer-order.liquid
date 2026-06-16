@@ -1,0 +1,266 @@
+<style>
+  .order-page {
+    padding: var(--spacing-xxl) 0;
+  }
+
+  .order-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    margin-bottom: var(--spacing-xl);
+    transition: color var(--transition-fast);
+  }
+  .order-page__back:hover { color: var(--color-text); }
+
+  .order-page__header {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .order-page__title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .order-page__meta {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-sm);
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  .order-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .order-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .order-item__image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    background: #f4f4f4;
+  }
+
+  .order-item__details {
+    flex: 1;
+  }
+
+  .order-item__title {
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .order-item__variant {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .order-item__price {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .order-summary__card {
+    background: var(--color-card-bg);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+  }
+
+  .order-summary__title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .order-summary__row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    font-size: 0.875rem;
+  }
+
+  .order-summary__row--total {
+    font-weight: 800;
+    font-size: 1.125rem;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+  }
+
+  .order-address {
+    margin-top: var(--spacing-xl);
+  }
+
+  .order-address__title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .order-address__line {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  @media (min-width: 768px) {
+    .order-grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .order-item__image {
+      width: 64px;
+      height: 64px;
+    }
+  }
+</style>
+
+<div class="order-page container">
+  {%- comment -%} ── Back link ── {%- endcomment -%}
+  <a href="{{ routes.account_url }}" class="order-page__back">
+    ← Back to Account
+  </a>
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
+  <div class="order-page__header">
+    <h1 class="order-page__title">Order {{ order.name }}</h1>
+    <div class="order-page__meta">
+      <span>{{ order.created_at | date: '%B %d, %Y' }}</span>
+      <span>
+        Payment:
+        <span class="order-status
+          {%- if order.financial_status == 'paid' %} order-status--paid
+          {%- elsif order.financial_status == 'pending' %} order-status--pending
+          {%- else %} order-status--fulfilled
+          {%- endif -%}
+        ">
+          {{ order.financial_status }}
+        </span>
+      </span>
+      {% if order.fulfillment_status %}
+        <span>
+          Fulfillment:
+          <span class="order-status order-status--fulfilled">
+            {{ order.fulfillment_status }}
+          </span>
+        </span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="order-grid">
+    {%- comment -%} ── Line Items ── {%- endcomment -%}
+    <div class="order-items">
+      {% for item in order.line_items %}
+        <div class="order-item">
+          {% if item.image %}
+            <img
+              class="order-item__image"
+              src="{{ item.image | image_url: width: 160 }}"
+              alt="{{ item.title | escape }}"
+              width="80"
+              height="80"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="order-item__image" aria-hidden="true"></div>
+          {% endif %}
+
+          <div class="order-item__details">
+            <p class="order-item__title">{{ item.title }}</p>
+            {% if item.variant_title != blank %}
+              <p class="order-item__variant">{{ item.variant_title }}</p>
+            {% endif %}
+            <p class="order-item__price">
+              {{ item.quantity }} × {{ item.price | money }}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {%- comment -%} ── Summary Sidebar ── {%- endcomment -%}
+    <div class="order-summary">
+      <div class="order-summary__card">
+        <h2 class="order-summary__title">Order Summary</h2>
+
+        <div class="order-summary__row">
+          <span>Subtotal</span>
+          <span>{{ order.subtotal_price | money }}</span>
+        </div>
+
+        <div class="order-summary__row">
+          <span>Shipping</span>
+          <span>
+            {% if order.shipping_price > 0 %}
+              {{ order.shipping_price | money }}
+            {% else %}
+              Free
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="order-summary__row">
+          <span>Tax</span>
+          <span>{{ order.tax_price | money }}</span>
+        </div>
+
+        <div class="order-summary__row order-summary__row--total">
+          <span>Total</span>
+          <span>{{ order.total_price | money }}</span>
+        </div>
+      </div>
+
+      {%- comment -%} ── Shipping Address ── {%- endcomment -%}
+      {% if order.shipping_address %}
+        <div class="order-address">
+          <div class="order-summary__card">
+            <h3 class="order-address__title">Shipping Address</h3>
+            <div class="order-address__line">
+              {{ order.shipping_address.name }}<br>
+              {{ order.shipping_address.address1 }}<br>
+              {% if order.shipping_address.address2 != blank %}
+                {{ order.shipping_address.address2 }}<br>
+              {% endif %}
+              {{ order.shipping_address.city }}, {{ order.shipping_address.province }} {{ order.shipping_address.zip }}<br>
+              {{ order.shipping_address.country }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer Order",
+  "settings": [],
+  "presets": [{ "name": "Customer Order" }]
+}
+{% endschema %}

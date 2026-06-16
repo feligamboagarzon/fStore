@@ -1,0 +1,255 @@
+<style>
+  header.site-header {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 1px solid var(--color-line);
+    transition: transform var(--transition-smooth);
+  }
+  header.site-header.is-scrolling-down { transform: translateY(-100%); }
+  header.site-header.is-scrolling-up { transform: translateY(0); }
+
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--header-height);
+    gap: var(--spacing-md);
+  }
+
+  .header-left { display: flex; align-items: center; gap: var(--spacing-sm); justify-self: start; }
+  .header-right { display: flex; align-items: center; gap: var(--spacing-sm); justify-self: end; }
+
+  /* Logo (center) */
+  .header-logo { justify-self: center; display: flex; align-items: center; }
+  .header-logo a { display: flex; align-items: center; }
+  .header-logo-img { height: 34px; width: auto; display: block; object-fit: contain; }
+
+  /* Desktop nav lives in the left cell */
+  .header-nav { display: none; }
+  @media (min-width: 900px) {
+    .header-nav {
+      display: flex;
+      gap: var(--spacing-lg);
+      align-items: center;
+    }
+    .header-burger { display: none; }
+  }
+  .header-nav a {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    position: relative;
+    padding: 4px 0;
+    transition: color var(--transition-fast);
+  }
+  .header-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0; height: 2px;
+    background: var(--color-accent);
+    transition: width var(--transition-fast);
+  }
+  .header-nav a:hover::after { width: 100%; }
+
+  /* Icon buttons */
+  .icon-btn {
+    position: relative;
+    width: 42px; height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    border-radius: var(--radius-full);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
+  .icon-btn:hover { background: var(--color-bg-subtle); }
+  .icon-btn svg { width: 21px; height: 21px; display: block; }
+
+  .account-avatar {
+    width: 26px; height: 26px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-text); color: var(--color-white);
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-size: 0.7rem; font-weight: 600;
+    text-transform: uppercase;
+  }
+  .account-btn { display: none; }
+  @media (min-width: 900px) { .account-btn { display: inline-flex; } }
+
+  .cart-count {
+    position: absolute;
+    top: 4px; right: 2px;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-family: var(--font-heading);
+    font-size: 0.66rem;
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    min-width: 17px; height: 17px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 0 0 2px var(--color-base);
+  }
+  .cart-count:empty, .cart-count[data-count="0"] { display: none; }
+
+  /* Hamburger */
+  .header-burger {
+    width: 42px; height: 42px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--color-text);
+  }
+  .header-burger span {
+    display: block;
+    position: relative;
+    width: 20px; height: 2px;
+    background: currentColor;
+    transition: background 0.1s;
+  }
+  .header-burger span::before,
+  .header-burger span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 20px; height: 2px;
+    background: currentColor;
+    transition: transform var(--transition-fast), top var(--transition-fast);
+  }
+  .header-burger span::before { top: -6px; }
+  .header-burger span::after { top: 6px; }
+
+  /* Mobile menu drawer */
+  .mobile-menu-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10, 10, 11, 0.4);
+    z-index: 998;
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--transition-smooth);
+  }
+  .mobile-menu-overlay.is-open { opacity: 1; pointer-events: auto; }
+  .mobile-menu {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 86%;
+    max-width: 340px;
+    background: var(--color-base);
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 8px 0 40px rgba(10, 10, 11, 0.12);
+  }
+  .mobile-menu.is-open { transform: translateX(0); }
+  .mobile-menu__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--color-line);
+    min-height: var(--header-height);
+  }
+  .mobile-menu__close { font-size: 1.8rem; line-height: 1; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+  .mobile-menu__links { display: flex; flex-direction: column; padding: var(--spacing-md) var(--spacing-lg); flex: 1; overflow-y: auto; }
+  .mobile-menu__links a {
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color var(--transition-fast);
+  }
+  .mobile-menu__links a:hover { color: var(--color-muted); }
+  .mobile-menu__links a svg { width: 18px; height: 18px; color: var(--color-faint); }
+  .mobile-menu__footer { padding: var(--spacing-lg); border-top: 1px solid var(--color-line); }
+</style>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="header-left">
+      <button class="header-burger" id="mobile-menu-open" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+      </button>
+      <nav class="header-nav">
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+
+    <div class="header-logo">
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" width="160" height="34" class="header-logo-img">
+      </a>
+    </div>
+
+    <div class="header-right">
+      <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="icon-btn account-btn" aria-label="Account">
+        {% if customer %}
+          <span class="account-avatar">{{ customer.first_name | slice: 0 }}</span>
+        {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="6.5" r="2.75" stroke="currentColor" stroke-width="1.5" />
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="m5.172 14.591-.437.786a.588.588 0 0 0 .514.873h9.502a.588.588 0 0 0 .514-.873l-.437-.786a5.523 5.523 0 0 0-9.656 0" />
+          </svg>
+        {% endif %}
+      </a>
+      <button class="icon-btn cart-icon-btn" onclick="document.dispatchEvent(new CustomEvent('cart:open'))" aria-label="Open cart">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M3.392 6.875h13.216v8.016c0 .567-.224 1.112-.624 1.513-.4.402-.941.627-1.506.627H5.522a2.13 2.13 0 0 1-1.506-.627 2.15 2.15 0 0 1-.624-1.513zM8.818 2.969h2.333c.618 0 1.211.247 1.649.686a2.35 2.35 0 0 1 .683 1.658v1.562H6.486V5.313c0-.622.246-1.218.683-1.658a2.33 2.33 0 0 1 1.65-.686" />
+        </svg>
+        <span class="cart-count" id="cart-count" data-count="{{ cart.item_count }}">{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{% # Mobile slide-in menu %}
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+<aside class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__header">
+    <img src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name }}" width="140" height="30" style="height:30px;width:auto;object-fit:contain;">
+    <button class="mobile-menu__close" id="mobile-menu-close" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="mobile-menu__links">
+    {%- for link in section.settings.menu.links -%}
+      <a href="{{ link.url }}">
+        {{ link.title }}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+          <path d="M5 10h10M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endfor -%}
+  </nav>
+  <div class="mobile-menu__footer">
+    <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="btn btn--outline" style="width:100%;">
+      {% if customer %}My Account{% else %}Log in / Sign up{% endif %}
+    </a>
+  </div>
+</aside>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Menu"
+    }
+  ]
+}
+{% endschema %}

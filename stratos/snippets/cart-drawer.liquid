@@ -1,0 +1,439 @@
+<style>
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 420px;
+    background: var(--color-base);
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 40px rgba(10, 10, 11, 0.14);
+  }
+  .cart-drawer.is-open {
+    transform: translateX(0);
+  }
+  .cart-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 11, 0.4);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-smooth);
+  }
+  .cart-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .cart-drawer__header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-line);
+    min-height: var(--header-height);
+  }
+  .cart-drawer__title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .cart-drawer__close {
+    font-size: 1.8rem;
+    line-height: 1;
+    width: 40px; height: 40px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--color-muted);
+    transition: color var(--transition-fast);
+  }
+  .cart-drawer__close:hover { color: var(--color-text); }
+  .cart-drawer__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+  }
+  .cart-item {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: var(--spacing-md);
+  }
+  .cart-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .cart-item__image {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-subtle);
+  }
+  .cart-item__details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .cart-item__title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .cart-item__variant {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    margin-bottom: 4px;
+  }
+  .cart-item__price {
+    font-family: var(--font-heading);
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  .cart-item__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: var(--spacing-sm);
+  }
+  .qty-selector {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-full);
+    background: var(--color-white);
+  }
+  .qty-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    transition: color var(--transition-fast);
+  }
+  .qty-btn:hover {
+    color: var(--color-muted);
+  }
+  .qty-val {
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 24px;
+    text-align: center;
+    user-select: none;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-faint);
+    padding: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast);
+  }
+  .remove-btn:hover {
+    color: var(--color-text);
+  }
+  .cart-drawer__footer {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-line);
+    background: var(--color-base);
+  }
+  .checkout-btn {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.05rem;
+    display: block;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(198, 255, 61, 0.35);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+  }
+  .checkout-btn:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(198, 255, 61, 0.45);
+  }
+  #cart-shipping-notice {
+    font-family: var(--font-heading);
+    color: var(--color-text);
+  }
+  .cart-progress {
+    background: var(--color-bg-subtle);
+    height: 6px;
+    border-radius: var(--radius-full);
+    margin-top: var(--spacing-sm);
+    overflow: hidden;
+  }
+  .cart-progress__bar {
+    height: 100%;
+    background: var(--color-accent);
+    width: 0%;
+    transition: width var(--transition-smooth);
+  }
+</style>
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer__header">
+    <h2 class="cart-drawer__title">Your Cart</h2>
+    <button class="cart-drawer__close" id="cart-close">&times;</button>
+  </div>
+  
+  <div class="cart-drawer__content">
+    <div id="cart-shipping-notice" style="margin-bottom: var(--spacing-lg); text-align: center; font-size: 0.875rem; font-weight: 600;">
+      <!-- Populated via JS -->
+    </div>
+    
+    <div id="cart-items">
+      <!-- Items injected via JS -->
+      {% if cart.item_count > 0 %}
+        {% for item in cart.items %}
+          <div class="cart-item" data-key="{{ item.key }}">
+            <img src="{{ item.image | image_url: width: 160 }}" class="cart-item__image" alt="{{ item.title | escape }}" width="80" height="80">
+            <div class="cart-item__details">
+              <div class="cart-item__title">{{ item.product.title }}</div>
+              {% if item.variant.title != 'Default Title' %}
+                <div class="cart-item__variant">{{ item.variant.title }}</div>
+              {% endif %}
+              <div class="cart-item__price">{{ item.line_price | money }}</div>
+              <div class="cart-item__actions">
+                <div class="qty-selector">
+                  <button type="button" class="qty-btn minus-btn" data-key="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}">&minus;</button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button type="button" class="qty-btn plus-btn" data-key="{{ item.key }}" data-qty="{{ item.quantity | plus: 1 }}">&plus;</button>
+                </div>
+                <button type="button" class="remove-btn" data-key="{{ item.key }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" width="16" height="16">
+                    <path d="M4 6h12m-10 0v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M9 6V4a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="text-align: center; margin-top: var(--spacing-xxl);">Your cart is empty.</p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="cart-drawer__footer">
+    <div class="flex justify-between" style="margin-bottom: var(--spacing-md); font-weight: 700; font-size: 1.25rem;">
+      <span>Total</span>
+      <span id="cart-total">{{ cart.total_price | money }}</span>
+    </div>
+    <form action="{{ routes.cart_url }}" method="post" id="cart">
+      <button type="submit" name="checkout" class="checkout-btn">Checkout Now &rarr;</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const drawer = document.getElementById('cart-drawer');
+    const overlay = document.getElementById('cart-overlay');
+    const closeBtn = document.getElementById('cart-close');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+    const shippingNoticeContainer = document.getElementById('cart-shipping-notice');
+    
+    const rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    const shippingThreshold = 5000; // $50.00
+    
+    function formatMoney(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+    
+    function openCart() {
+      drawer.classList.add('is-open');
+      overlay.classList.add('is-open');
+    }
+    
+    function closeCart() {
+      drawer.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+    }
+    
+    document.addEventListener('cart:open', openCart);
+    closeBtn.addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+
+    // Render Cart HTML dynamically
+    function renderCart(cartData) {
+      // 1. Update Cart Items
+      if (cartData.item_count > 0) {
+        cartItemsContainer.innerHTML = cartData.items.map(item => `
+          <div class="cart-item" data-key="${item.key}">
+            <img src="${item.image || 'https://cdn.shopify.com/s/images/themes/product-1.png'}" class="cart-item__image" alt="${item.title}" width="80" height="80">
+            <div class="cart-item__details">
+              <div class="cart-item__title">${item.product_title}</div>
+              ${(item.variant_title && item.variant_title !== 'Default Title') ? `<div class="cart-item__variant">${item.variant_title}</div>` : ''}
+              <div class="cart-item__price">${formatMoney(item.line_price)}</div>
+              <div class="cart-item__actions">
+                <div class="qty-selector">
+                  <button type="button" class="qty-btn minus-btn" data-key="${item.key}" data-qty="${item.quantity - 1}">&minus;</button>
+                  <span class="qty-val">${item.quantity}</span>
+                  <button type="button" class="qty-btn plus-btn" data-key="${item.key}" data-qty="${item.quantity + 1}">&plus;</button>
+                </div>
+                <button type="button" class="remove-btn" data-key="${item.key}">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" width="16" height="16">
+                    <path d="M4 6h12m-10 0v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6M9 6V4a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        cartItemsContainer.innerHTML = `<p style="text-align: center; margin-top: var(--spacing-xxl);">Your cart is empty.</p>`;
+      }
+      
+      // 2. Update Total
+      cartTotalElement.innerHTML = formatMoney(cartData.total_price);
+      
+      // 3. Update Cart Badge Count
+      const badge = document.getElementById('cart-count');
+      if (badge) {
+        badge.innerHTML = cartData.item_count;
+        badge.style.display = cartData.item_count > 0 ? 'flex' : 'none';
+      }
+      
+      // 4. Update Shipping Notice & Progress Bar
+      const remaining = shippingThreshold - cartData.total_price;
+      const progressPercent = Math.min((cartData.total_price / shippingThreshold) * 100, 100);
+      
+      if (remaining > 0) {
+        shippingNoticeContainer.innerHTML = `
+          You are ${formatMoney(remaining)} away from FREE shipping!
+          <div class="cart-progress">
+            <div class="cart-progress__bar" style="width: ${progressPercent}%;"></div>
+          </div>
+        `;
+      } else {
+        shippingNoticeContainer.innerHTML = `
+          🎉 You qualified for FREE shipping!
+          <div class="cart-progress">
+            <div class="cart-progress__bar" style="width: 100%;"></div>
+          </div>
+        `;
+      }
+    }
+    
+    // Fetch and update cart
+    window.updateCart = function() {
+      fetch(rootPath + 'cart.js')
+      .then(response => response.json())
+      .then(data => {
+        renderCart(data);
+      })
+      .catch(err => console.error('Error fetching cart:', err));
+    };
+
+    // Update Item Quantity/Remove
+    window.updateCartItemQuantity = function(key, qty) {
+      fetch(rootPath + 'cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: qty })
+      })
+      .then(response => response.json())
+      .then(data => {
+        renderCart(data);
+      })
+      .catch(err => {
+        console.error('Error changing item quantity:', err);
+        alert('Could not update cart quantity.');
+      });
+    };
+
+    // Handle delegated click events in the cart items list
+    cartItemsContainer.addEventListener('click', (e) => {
+      const button = e.target.closest('button');
+      if (!button) return;
+      
+      const key = button.getAttribute('data-key');
+      if (!key) return;
+      
+      if (button.classList.contains('qty-btn')) {
+        const qty = parseInt(button.getAttribute('data-qty'));
+        updateCartItemQuantity(key, qty);
+      } else if (button.classList.contains('remove-btn')) {
+        updateCartItemQuantity(key, 0);
+      }
+    });
+
+    // Quick Add handler
+    window.handleQuickAdd = function(event, form) {
+      event.preventDefault();
+      
+      const submitButton = form.querySelector('[type="submit"]');
+      const originalButtonText = submitButton ? submitButton.innerHTML : '⚡ QUICK ADD';
+      
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Adding...';
+      }
+
+      const formData = new FormData(form);
+      
+      fetch(rootPath + 'cart/add.js', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        return response.json().then(data => {
+          if (!response.ok) {
+            throw new Error(data.description || data.message || 'Error adding to cart');
+          }
+          return data;
+        });
+      })
+      .then(data => {
+        if (submitButton) {
+          submitButton.innerHTML = 'Added!';
+          setTimeout(() => {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+          }, 1500);
+        }
+        // Open the cart drawer
+        openCart();
+        // Fetch new cart state and render
+        updateCart();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert(error.message || 'Failed to add item to cart.');
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+        }
+      });
+    };
+    
+    // Initial fetch to render cart correctly on page load
+    updateCart();
+  });
+</script>

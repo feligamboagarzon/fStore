@@ -1,0 +1,39 @@
+{% comment %}
+  This section is used in the collection template to render collection page
+  listing all products within a collection.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+{% endcomment %}
+
+<div class="container" style="padding-top: var(--spacing-xxl); padding-bottom: var(--spacing-xxxl);">
+  <header style="margin-bottom: var(--spacing-xl);">
+    <h1 class="collection-page-title">{{ collection.title }}</h1>
+    {% if collection.description != blank %}
+      <p class="section-subtitle" style="margin-bottom: var(--spacing-sm);">{{ collection.description | strip_html | truncatewords: 30 }}</p>
+    {% endif %}
+    <p class="collection-page-count">{{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}</p>
+  </header>
+
+  {% paginate collection.products by 12 %}
+    <div class="product-grid">
+      {% for product in collection.products %}
+        {% render 'product-card', product: product %}
+      {% else %}
+        <p class="section-subtitle">No products found in this collection yet.</p>
+      {% endfor %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+      <div class="pagination-wrapper" style="text-align: center;">
+        {{ paginate | default_pagination }}
+      </div>
+    {% endif %}
+  {% endpaginate %}
+</div>
+
+{% schema %}
+{
+  "name": "t:general.collection",
+  "settings": []
+}
+{% endschema %}

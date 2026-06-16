@@ -1,0 +1,140 @@
+<style>
+  .social-proof { padding: var(--spacing-xxxl) 0; background: var(--color-bg-subtle); }
+  @media (max-width: 600px) { .social-proof { padding: var(--spacing-xxl) 0; } }
+  .social-proof__header { text-align: center; margin-bottom: var(--spacing-xl); display: flex; flex-direction: column; align-items: center; gap: var(--spacing-sm); }
+  .social-proof__title { font-size: clamp(1.8rem, 4.5vw, 2.8rem); font-weight: 600; letter-spacing: -0.035em; }
+  .social-proof__subtitle { color: var(--color-muted); font-size: 1rem; }
+  .social-proof__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+  @media (min-width: 768px) {
+    .social-proof__grid { grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); }
+  }
+  .social-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 9 / 16;
+    background: var(--color-dark);
+  }
+  .social-card img, .social-card video { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-smooth); }
+  .social-card:hover img { transform: scale(1.05); }
+  .social-card__play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px; height: 48px;
+    border-radius: var(--radius-full);
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text);
+    z-index: 3;
+    transition: transform var(--transition-fast);
+  }
+  .social-card:hover .social-card__play { transform: translate(-50%, -50%) scale(1.08); }
+  .social-card__overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: var(--spacing-md);
+    background: linear-gradient(transparent, rgba(12,12,14,0.78));
+    color: var(--color-white);
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .social-card__overlay svg { width: 15px; height: 15px; }
+</style>
+
+<div class="social-proof">
+  <div class="container">
+    <div class="social-proof__header">
+      <span class="eyebrow">{{ section.settings.eyebrow | default: 'As seen on TikTok' }}</span>
+      <h2 class="social-proof__title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="social-proof__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <div class="social-proof__grid">
+      {% for block in section.blocks %}
+        <div class="social-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | image_url: width: 500 }}" alt="Social proof" width="500" height="{{ 500 | divided_by: block.settings.image.aspect_ratio | round }}" loading="lazy">
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+          <div class="social-card__play">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="social-card__overlay">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            {{ block.settings.views }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Social Proof",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "As seen on TikTok"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Straight off your For You page"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading",
+      "default": "Tag us @funstore for a chance to be featured."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_item",
+      "name": "Social Item",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "views",
+          "label": "View Count",
+          "default": "1.2M"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social Proof",
+      "blocks": [
+        { "type": "social_item" },
+        { "type": "social_item" },
+        { "type": "social_item" },
+        { "type": "social_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

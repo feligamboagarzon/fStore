@@ -1,0 +1,790 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "application.js",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "assets_application",
+      "community": 0,
+      "norm_label": "application.js"
+    },
+    {
+      "label": "initMobileMenu()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "assets_application_initmobilemenu",
+      "community": 0,
+      "norm_label": "initmobilemenu()"
+    },
+    {
+      "label": "initStickyHeader()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "assets_application_initstickyheader",
+      "community": 0,
+      "norm_label": "initstickyheader()"
+    },
+    {
+      "label": "initProductAccordions()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "assets_application_initproductaccordions",
+      "community": 0,
+      "norm_label": "initproductaccordions()"
+    },
+    {
+      "label": "initLivePurchaseToast()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "assets_application_initlivepurchasetoast",
+      "community": 0,
+      "norm_label": "initlivepurchasetoast()"
+    },
+    {
+      "label": "initLiveViewersCount()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L148",
+      "_origin": "ast",
+      "id": "assets_application_initliveviewerscount",
+      "community": 0,
+      "norm_label": "initliveviewerscount()"
+    },
+    {
+      "label": "initProductGallery()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L163",
+      "_origin": "ast",
+      "id": "assets_application_initproductgallery",
+      "community": 0,
+      "norm_label": "initproductgallery()"
+    },
+    {
+      "label": "initFrequentlyBoughtTogether()",
+      "file_type": "code",
+      "source_file": "assets/application.js",
+      "source_location": "L192",
+      "_origin": "ast",
+      "id": "assets_application_initfrequentlyboughttogether",
+      "community": 0,
+      "norm_label": "initfrequentlyboughttogether()"
+    },
+    {
+      "label": "update_styles.py",
+      "file_type": "code",
+      "source_file": "update_styles.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "update_styles",
+      "community": 8,
+      "norm_label": "update_styles.py"
+    },
+    {
+      "label": "CODE_OF_CONDUCT.md",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "code_of_conduct",
+      "community": 1,
+      "norm_label": "code_of_conduct.md"
+    },
+    {
+      "label": "Contributor Covenant Code of Conduct",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "community": 1,
+      "norm_label": "contributor covenant code of conduct"
+    },
+    {
+      "label": "Our Pledge",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "code_of_conduct_our_pledge",
+      "community": 1,
+      "norm_label": "our pledge"
+    },
+    {
+      "label": "Our Standards",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "code_of_conduct_our_standards",
+      "community": 1,
+      "norm_label": "our standards"
+    },
+    {
+      "label": "Enforcement Responsibilities",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "code_of_conduct_enforcement_responsibilities",
+      "community": 1,
+      "norm_label": "enforcement responsibilities"
+    },
+    {
+      "label": "Scope",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "code_of_conduct_scope",
+      "community": 1,
+      "norm_label": "scope"
+    },
+    {
+      "label": "Enforcement",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "code_of_conduct_enforcement",
+      "community": 1,
+      "norm_label": "enforcement"
+    },
+    {
+      "label": "Enforcement Guidelines",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "code_of_conduct_enforcement_guidelines",
+      "community": 3,
+      "norm_label": "enforcement guidelines"
+    },
+    {
+      "label": "1. Correction",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "code_of_conduct_1_correction",
+      "community": 3,
+      "norm_label": "1. correction"
+    },
+    {
+      "label": "2. Warning",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "code_of_conduct_2_warning",
+      "community": 3,
+      "norm_label": "2. warning"
+    },
+    {
+      "label": "3. Temporary Ban",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "code_of_conduct_3_temporary_ban",
+      "community": 3,
+      "norm_label": "3. temporary ban"
+    },
+    {
+      "label": "4. Permanent Ban",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "code_of_conduct_4_permanent_ban",
+      "community": 3,
+      "norm_label": "4. permanent ban"
+    },
+    {
+      "label": "Attribution",
+      "file_type": "document",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "code_of_conduct_attribution",
+      "community": 1,
+      "norm_label": "attribution"
+    },
+    {
+      "label": "CONTRIBUTING.md",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "contributing",
+      "community": 4,
+      "norm_label": "contributing.md"
+    },
+    {
+      "label": "Contributing to Skeleton Theme",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "contributing_contributing_to_skeleton_theme",
+      "community": 4,
+      "norm_label": "contributing to skeleton theme"
+    },
+    {
+      "label": "How to contribute",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "contributing_how_to_contribute",
+      "community": 4,
+      "norm_label": "how to contribute"
+    },
+    {
+      "label": "Standards",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "contributing_standards",
+      "community": 4,
+      "norm_label": "standards"
+    },
+    {
+      "label": "Steps to contribute",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "contributing_steps_to_contribute",
+      "community": 4,
+      "norm_label": "steps to contribute"
+    },
+    {
+      "label": "LICENSE.md",
+      "file_type": "document",
+      "source_file": "LICENSE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "license",
+      "community": 7,
+      "norm_label": "license.md"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme",
+      "community": 2,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Getting started",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "readme_getting_started",
+      "community": 6,
+      "norm_label": "getting started"
+    },
+    {
+      "label": "Prerequisites",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "readme_prerequisites",
+      "community": 6,
+      "norm_label": "prerequisites"
+    },
+    {
+      "label": "Clone",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "readme_clone",
+      "community": 6,
+      "norm_label": "clone"
+    },
+    {
+      "label": "Preview",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "readme_preview",
+      "community": 6,
+      "norm_label": "preview"
+    },
+    {
+      "label": "Theme architecture",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "readme_theme_architecture",
+      "community": 5,
+      "norm_label": "theme architecture"
+    },
+    {
+      "label": "Templates",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "readme_templates",
+      "community": 5,
+      "norm_label": "templates"
+    },
+    {
+      "label": "Sections",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "readme_sections",
+      "community": 5,
+      "norm_label": "sections"
+    },
+    {
+      "label": "Blocks",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "readme_blocks",
+      "community": 5,
+      "norm_label": "blocks"
+    },
+    {
+      "label": "Schemas",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "readme_schemas",
+      "community": 2,
+      "norm_label": "schemas"
+    },
+    {
+      "label": "CSS & JavaScript",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L144",
+      "_origin": "ast",
+      "id": "readme_css_javascript",
+      "community": 2,
+      "norm_label": "css & javascript"
+    },
+    {
+      "label": "`critical.css`",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L148",
+      "_origin": "ast",
+      "id": "readme_critical_css",
+      "community": 2,
+      "norm_label": "`critical.css`"
+    },
+    {
+      "label": "Contributing",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L152",
+      "_origin": "ast",
+      "id": "readme_contributing",
+      "community": 2,
+      "norm_label": "contributing"
+    },
+    {
+      "label": "License",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "readme_license",
+      "community": 2,
+      "norm_label": "license"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initfrequentlyboughttogether",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initlivepurchasetoast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initliveviewerscount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initmobilemenu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initproductaccordions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initproductgallery",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "assets/application.js",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "assets_application",
+      "target": "assets_application_initstickyheader",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "code_of_conduct",
+      "target": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_attribution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_enforcement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_enforcement_guidelines",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_enforcement_responsibilities",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_our_pledge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_our_standards",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "code_of_conduct_contributor_covenant_code_of_conduct",
+      "target": "code_of_conduct_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "code_of_conduct_enforcement_guidelines",
+      "target": "code_of_conduct_1_correction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "code_of_conduct_enforcement_guidelines",
+      "target": "code_of_conduct_2_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "code_of_conduct_enforcement_guidelines",
+      "target": "code_of_conduct_3_temporary_ban",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CODE_OF_CONDUCT.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "code_of_conduct_enforcement_guidelines",
+      "target": "code_of_conduct_4_permanent_ban",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "contributing",
+      "target": "contributing_contributing_to_skeleton_theme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "contributing_contributing_to_skeleton_theme",
+      "target": "contributing_how_to_contribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "contributing_contributing_to_skeleton_theme",
+      "target": "contributing_standards",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "contributing_contributing_to_skeleton_theme",
+      "target": "contributing_steps_to_contribute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_contributing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_css_javascript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_getting_started",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_license",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_schemas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_theme_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "readme_getting_started",
+      "target": "readme_clone",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "readme_getting_started",
+      "target": "readme_prerequisites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "readme_getting_started",
+      "target": "readme_preview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "readme_theme_architecture",
+      "target": "readme_blocks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "readme_theme_architecture",
+      "target": "readme_sections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "readme_theme_architecture",
+      "target": "readme_templates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "readme_css_javascript",
+      "target": "readme_critical_css",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,54 @@
+{%- if section.settings.show_announcement -%}
+  <div class="announcement-bar" style="background-color: {{ section.settings.color_bg }}; color: {{ section.settings.color_text }};">
+    <p class="container announcement-bar__text">{{ section.settings.text }}</p>
+  </div>
+{%- endif -%}
+
+<style>
+  .announcement-bar {
+    text-align: center;
+    padding: 9px var(--spacing-md);
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+  }
+  .announcement-bar__text { margin: 0; }
+</style>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Free worldwide shipping on orders over $30 — limited time"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Background color",
+      "default": "#0c0c0e"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}

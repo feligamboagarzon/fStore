@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar"
+    },
+    "hero": {
+      "type": "hero-video"
+    },
+    "trending": {
+      "type": "trending-collection"
+    },
+    "social": {
+      "type": "social-proof"
+    },
+    "trust": {
+      "type": "trust-banner"
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "hero",
+    "trending",
+    "social",
+    "trust"
+  ]
+}

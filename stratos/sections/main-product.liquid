@@ -1,0 +1,489 @@
+<div class="product-page container">
+  <div class="product-grid--detail">
+
+    <!-- Left Column: Media Gallery -->
+    <div class="product-media-wrapper">
+      <div class="product-media-container">
+        
+        <!-- Badges Overlay -->
+        <div class="pill-tags">
+          <span class="pill-tag pill-tag--selling-fast">Selling fast</span>
+          <span class="pill-tag pill-tag--viral-trend">Viral</span>
+        </div>
+        
+        <!-- Horizontal Scroll Snap Media Slider -->
+        <div class="product-media-track">
+          {% for media in product.media %}
+            <div class="product-media-item" data-media-id="{{ media.id }}">
+              {% if media.media_type == 'image' %}
+                <img src="{{ media | image_url: width: 1000 }}" alt="{{ media.alt | escape }}" width="1000" height="{{ 1000 | divided_by: media.preview_image.aspect_ratio | round }}" loading="eager">
+              {% elsif media.media_type == 'video' %}
+                {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false, style: "width: 100%; height: 100%; object-fit: cover;" }}
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="product-media-item">
+              {{ 'product-1' | placeholder_svg_tag }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <!-- Thumbnails Grid with Purchase Notification Toast on First Thumb -->
+      <div class="product-media-thumbnails">
+        {% for media in product.media %}
+          {% if forloop.first %}
+            <div class="thumbnail-wrapper">
+              <!-- Live Purchase Social Proof Toast -->
+              <div class="live-toast">
+                <div class="live-toast__avatar">A</div>
+                <div class="live-toast__text">
+                  <strong>Alex</strong> from <strong>Los Angeles</strong><br>just purchased 2 mins ago!
+                </div>
+              </div>
+              <button class="product-media-thumbnail is-active" data-index="{{ forloop.index0 }}">
+                <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | escape }}" width="200" height="200" loading="lazy">
+              </button>
+            </div>
+          {% else %}
+            <button class="product-media-thumbnail" data-index="{{ forloop.index0 }}">
+              <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | escape }}" width="200" height="200" loading="lazy">
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Right Column: Product Info & Form -->
+    <div class="product-info">
+      
+      <!-- Star Rating -->
+      <div class="rating-stars">
+        <span>⭐⭐⭐⭐⭐</span>
+        <span>4.8 (2.4k reviews)</span>
+      </div>
+      
+      <!-- Title & Price -->
+      <div class="product-meta">
+        <h1 class="product-title">{{ product.title }}</h1>
+        <div class="product-price-wrapper">
+          <span class="product-price-current">{{ product.price | money }}</span>
+          {% if product.compare_at_price > product.price %}
+            <span class="product-price-compare">{{ product.compare_at_price | money }}</span>
+            {% assign saved_amount = product.compare_at_price | minus: product.price %}
+            {% assign saved_percent = saved_amount | times: 100.0 | divided_by: product.compare_at_price | round %}
+            <span class="save-badge">SAVE {{ saved_percent }}%</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Live View Counter Widget -->
+      <div class="live-view-counter">
+        <span class="pulsing-dot"></span>
+        <span>142</span> people are looking at this right now
+      </div>
+      
+      <!-- Shopify Product Form -->
+      <form method="post" action="{{ routes.cart_add_url }}" id="AddToCartForm" onsubmit="handleQuickAdd(event, this)">
+        <input type="hidden" name="id" id="ProductSelect-{{ section.id }}" value="{{ product.selected_or_first_available_variant.id }}">
+        
+        <!-- Swatches and Variant Selection Chips -->
+        {% unless product.has_only_default_variant %}
+          <div class="option-selectors">
+            {% for option in product.options_with_values %}
+              {% assign option_name_downcase = option.name | downcase %}
+              <div class="option-selector">
+                <h3 class="option-selector-title">
+                  {{ option.name }}: <span class="selected-option-value">{{ option.selected_value }}</span>
+                </h3>
+                
+                {% if option_name_downcase == 'color' or option_name_downcase == 'colour' %}
+                  <!-- Color Swatches -->
+                  <div class="swatches-grid">
+                    {% for value in option.values %}
+                      {% assign swatch_color = '#ffffff' %}
+                      {% assign value_downcase = value | downcase %}
+                      
+                      {% if value_downcase contains 'white' %}
+                        {% assign swatch_color = '#FFFFFF' %}
+                      {% elsif value_downcase contains 'black' %}
+                        {% assign swatch_color = '#000000' %}
+                      {% elsif value_downcase contains 'blue' %}
+                        {% assign swatch_color = '#90BEDE' %}
+                      {% elsif value_downcase contains 'pink' %}
+                        {% assign swatch_color = '#F76F8E' %}
+                      {% elsif value_downcase contains 'lavender' or value_downcase contains 'lilac' or value_downcase contains 'purple' %}
+                        {% assign swatch_color = '#7D5BA6' %}
+                      {% elsif value_downcase contains 'champagne' or value_downcase contains 'cream' or value_downcase contains 'beige' %}
+                        {% assign swatch_color = '#FFEAD0' %}
+                      {% else %}
+                        <!-- Custom CSS style color fallback -->
+                        {% assign swatch_color = value_downcase %}
+                      {% endif %}
+                      
+                      <input type="radio" 
+                             name="options[{{ option.name | escape }}]" 
+                             id="Option-{{ option.position }}-{{ forloop.index0 }}" 
+                             value="{{ value | escape }}" 
+                             {% if option.selected_value == value %}checked{% endif %} 
+                             class="swatch-input" 
+                             onchange="updateVariantSelection()">
+                      <label for="Option-{{ option.position }}-{{ forloop.index0 }}" 
+                             class="swatch-label" 
+                             style="background-color: {{ swatch_color }};" 
+                             title="{{ value | escape }}"></label>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <!-- Other Options (Size, Material, etc.) as Chips -->
+                  <div class="chips-grid">
+                    {% for value in option.values %}
+                      <input type="radio" 
+                             name="options[{{ option.name | escape }}]" 
+                             id="Option-{{ option.position }}-{{ forloop.index0 }}" 
+                             value="{{ value | escape }}" 
+                             {% if option.selected_value == value %}checked{% endif %} 
+                             class="chip-input" 
+                             onchange="updateVariantSelection()">
+                      <label for="Option-{{ option.position }}-{{ forloop.index0 }}" 
+                             class="chip-label">{{ value }}</label>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endunless %}
+        
+        <!-- Checkout CTAs -->
+        <div class="product-ctas">
+          <button type="submit" name="add" class="btn btn--add-to-cart">
+            <span>Add to Cart</span>
+            <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
+              <path d="M17.21 9l-4.38-6.56c-.19-.28-.51-.42-.83-.42-.32 0-.64.14-.83.43L6.79 9H2c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2h-4.79zM9 9l3-4.5L15 9H9zm13 10H2v-8h20v8zM12 13c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </button>
+          <button type="button" class="btn btn--buy-now" onclick="let form = document.getElementById('AddToCartForm'); if(form) { let input = document.createElement('input'); input.type='hidden'; input.name='return_to'; input.value='/checkout'; form.appendChild(input); form.submit(); }">
+            Buy It Now
+          </button>
+        </div>
+      </form>
+      
+      <!-- Collapsible Accordions -->
+      <div class="product-accordions">
+        <div class="accordion-item is-open">
+          <button class="accordion-header">
+            <span>Description</span>
+            <span class="accordion-icon">&darr;</span>
+          </button>
+          <div class="accordion-content" style="max-height: none;">
+            {{ product.description }}
+          </div>
+        </div>
+        
+        <div class="accordion-item">
+          <button class="accordion-header">
+            <span>Shipping & Returns</span>
+            <span class="accordion-icon">&darr;</span>
+          </button>
+          <div class="accordion-content">
+            <p style="margin-bottom:var(--spacing-xs)">✨ <strong>FREE Worldwide Shipping</strong> on all orders over $30!</p>
+            <p style="margin-bottom:var(--spacing-xs)">Due to viral demand, please allow 7-14 days for shipping. Tracking details will be emailed as soon as your package is dispatched.</p>
+            <p>We offer a <strong>30-day hassle-free refund policy</strong>. If you are not fully satisfied, contact support for a return.</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <!-- Frequently Bought Together section -->
+  {% assign fbt_count = 0 %}
+  {% assign collection = product.collections.first | default: collections.all %}
+  
+  {% for p in collection.products %}
+    {% if p.id != product.id and fbt_count < 2 %}
+      {% assign fbt_count = fbt_count | plus: 1 %}
+      {% if fbt_count == 1 %}
+        {% assign product_b = p %}
+      {% elsif fbt_count == 2 %}
+        {% assign product_c = p %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  
+  {% if fbt_count >= 1 %}
+    <div class="fbt-section">
+      <h2 class="fbt-title">Frequently Bought Together</h2>
+      <div class="fbt-box">
+        <div class="fbt-images-row">
+          
+          <!-- Product A (Current Product) -->
+          <div class="fbt-product-thumb" data-index="0">
+            <img src="{{ product.featured_image | image_url: width: 160 }}" alt="{{ product.title | escape }}" width="80" height="80" loading="lazy">
+          </div>
+          
+          <!-- Plus Sign -->
+          <div class="fbt-plus-sign">+</div>
+          
+          <!-- Product B -->
+          <div class="fbt-product-thumb" data-index="1">
+            <img src="{{ product_b.featured_image | image_url: width: 160 }}" alt="{{ product_b.title | escape }}" width="80" height="80" loading="lazy">
+          </div>
+          
+          {% if product_c %}
+            <!-- Plus Sign -->
+            <div class="fbt-plus-sign">+</div>
+            
+            <!-- Product C -->
+            <div class="fbt-product-thumb" data-index="2">
+              <img src="{{ product_c.featured_image | image_url: width: 160 }}" alt="{{ product_c.title | escape }}" width="80" height="80" loading="lazy">
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Checkbox selectors -->
+        <div class="fbt-checkbox-list">
+          <!-- Item A Checkbox (Current - Locked) -->
+          <label class="fbt-checkbox-label">
+            <input type="checkbox" class="fbt-checkbox-input" data-index="0" data-price="{{ product.price }}" value="{{ product.selected_or_first_available_variant.id }}" checked disabled>
+            <span><strong>This item:</strong> {{ product.title }} <span class="fbt-price-display">({{ product.price | money }})</span></span>
+          </label>
+          
+          <!-- Item B Checkbox -->
+          <label class="fbt-checkbox-label">
+            <input type="checkbox" class="fbt-checkbox-input" data-index="1" data-price="{{ product_b.price }}" value="{{ product_b.selected_or_first_available_variant.id }}" checked>
+            <span>{{ product_b.title }} <span class="fbt-price-display">({{ product_b.price | money }})</span></span>
+          </label>
+          
+          {% if product_c %}
+            <!-- Item C Checkbox -->
+            <label class="fbt-checkbox-label">
+              <input type="checkbox" class="fbt-checkbox-input" data-index="2" data-price="{{ product_c.price }}" value="{{ product_c.selected_or_first_available_variant.id }}" checked>
+              <span>{{ product_c.title }} <span class="fbt-price-display">({{ product_c.price | money }})</span></span>
+            </label>
+          {% endif %}
+        </div>
+        
+        <!-- Price total & action button -->
+        <div class="fbt-action-row">
+          <div>
+            <div class="fbt-total-price-label">Total Bundle Price:</div>
+            {% assign total_cents = product.price | plus: product_b.price %}
+            {% if product_c %}
+              {% assign total_cents = total_cents | plus: product_c.price %}
+            {% endif %}
+            <div class="fbt-total-price">{{ total_cents | money }}</div>
+          </div>
+          <button type="button" class="btn btn--fbt-add">ADD BUNDLE</button>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  
+  <!-- Verified Social Proof Section -->
+  <div class="reviews-section">
+    <div class="reviews-header">
+      <div>
+        <h2 class="reviews-title">Verified Reviews</h2>
+        <p class="reviews-subtitle">See what the trendsetters are saying</p>
+      </div>
+      <a href="#" class="write-review-link">WRITE A REVIEW</a>
+    </div>
+    
+    <div class="reviews-grid">
+      <!-- Review 1 -->
+      <div class="review-card">
+        <div class="review-card__header">
+          <div class="review-card__stars">⭐⭐⭐⭐⭐</div>
+          <span class="review-card__date">2 days ago</span>
+        </div>
+        <p class="review-card__body">"Literally saw this on my feed and had to have it. Shipping was insane fast and it looks even better IRL!"</p>
+        <div class="review-card__user">
+          <div class="review-card__avatar">JD</div>
+          <div class="review-card__name">
+            Jessica D.
+            <span class="review-card__verified-badge" title="Verified Buyer">
+              <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </span>
+          </div>
+        </div>
+        {% if product.images[0] %}
+          <div class="review-card__image">
+            <img src="{{ product.images[0] | image_url: width: 400 }}" alt="Reviewer product image 1" width="400" height="250" loading="lazy">
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Review 2 -->
+      <div class="review-card">
+        <div class="review-card__header">
+          <div class="review-card__stars">⭐⭐⭐⭐⭐</div>
+          <span class="review-card__date">1 week ago</span>
+        </div>
+        <p class="review-card__body">"Battery life actually lasts the full week. Cleanest UI I've ever seen on a smartwatch. 10/10."</p>
+        <div class="review-card__user">
+          <div class="review-card__avatar">ML</div>
+          <div class="review-card__name">
+            Marc L.
+            <span class="review-card__verified-badge" title="Verified Buyer">
+              <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </span>
+          </div>
+        </div>
+        {% if product.images[1] %}
+          <div class="review-card__image">
+            <img src="{{ product.images[1] | image_url: width: 400 }}" alt="Reviewer product image 2" width="400" height="250" loading="lazy">
+          </div>
+        {% elsif product.images[0] %}
+          <div class="review-card__image">
+            <img src="{{ product.images[0] | image_url: width: 400 }}" alt="Reviewer product image 1" width="400" height="250" loading="lazy">
+          </div>
+        {% endif %}
+      </div>
+      
+      <!-- Review 3 -->
+      <div class="review-card">
+        <div class="review-card__header">
+          <div class="review-card__stars">⭐⭐⭐⭐⭐</div>
+          <span class="review-card__date">Yesterday</span>
+        </div>
+        <p class="review-card__body">"Gifted this to my sister and she's obsessed. Thinking about getting the black one for myself now."</p>
+        <div class="review-card__user">
+          <div class="review-card__avatar">SC</div>
+          <div class="review-card__name">
+            Sarah C.
+            <span class="review-card__verified-badge" title="Verified Buyer">
+              <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </span>
+          </div>
+        </div>
+        {% if product.images[2] %}
+          <div class="review-card__image">
+            <img src="{{ product.images[2] | image_url: width: 400 }}" alt="Reviewer product image 3" width="400" height="250" loading="lazy">
+          </div>
+        {% elsif product.images[0] %}
+          <div class="review-card__image">
+            <img src="{{ product.images[0] | image_url: width: 400 }}" alt="Reviewer product image 1" width="400" height="250" loading="lazy">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Variants JSON Script for live swatch updates -->
+<script type="application/json" id="ProductJson-{{ section.id }}">
+  {{ product | json }}
+</script>
+
+<script>
+function updateVariantSelection() {
+  const sectionId = '{{ section.id }}';
+  const productJson = JSON.parse(document.getElementById(`ProductJson-${sectionId}`).textContent);
+  
+  // Find all checked options
+  const optionContainers = document.querySelectorAll(`.product-info .option-selector`);
+  const selectedOptions = [];
+  
+  optionContainers.forEach(container => {
+    const checkedInput = container.querySelector('input:checked');
+    if (checkedInput) {
+      selectedOptions.push(checkedInput.value);
+      
+      // Update selected value text next to option title
+      const valueSpan = container.querySelector('.selected-option-value');
+      if (valueSpan) {
+        valueSpan.textContent = checkedInput.value;
+      }
+    }
+  });
+  
+  // Find matching variant
+  const matchedVariant = productJson.variants.find(variant => {
+    return variant.options.every((option, index) => {
+      return selectedOptions.includes(option);
+    });
+  });
+  
+  const priceCurrent = document.querySelector('.product-price-current');
+  const priceCompare = document.querySelector('.product-price-compare');
+  const saveBadge = document.querySelector('.save-badge');
+  const variantInput = document.getElementById(`ProductSelect-${sectionId}`);
+  const addToCartBtn = document.querySelector('.btn--add-to-cart');
+  const buyNowBtn = document.querySelector('.btn--buy-now');
+  
+  if (matchedVariant) {
+    // Update variant ID input
+    variantInput.value = matchedVariant.id;
+    
+    // Update price displays
+    const formattedPrice = matchedVariant.price ? '$' + (matchedVariant.price / 100).toFixed(2) : '';
+    if (priceCurrent) priceCurrent.textContent = formattedPrice;
+    
+    if (matchedVariant.compare_at_price && matchedVariant.compare_at_price > matchedVariant.price) {
+      const formattedCompare = '$' + (matchedVariant.compare_at_price / 100).toFixed(2);
+      if (priceCompare) {
+        priceCompare.textContent = formattedCompare;
+        priceCompare.style.display = '';
+      }
+      
+      const savedAmount = matchedVariant.compare_at_price - matchedVariant.price;
+      const savedPercent = Math.round((savedAmount / matchedVariant.compare_at_price) * 100);
+      if (saveBadge) {
+        saveBadge.textContent = `SAVE ${savedPercent}%`;
+        saveBadge.style.display = '';
+      }
+    } else {
+      if (priceCompare) priceCompare.style.display = 'none';
+      if (saveBadge) saveBadge.style.display = 'none';
+    }
+    
+    // Update button states
+    if (matchedVariant.available) {
+      if (addToCartBtn) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.innerHTML = `<span>Add to Cart</span> <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M17.21 9l-4.38-6.56c-.19-.28-.51-.42-.83-.42-.32 0-.64.14-.83.43L6.79 9H2c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2h-4.79zM9 9l3-4.5L15 9H9zm13 10H2v-8h20v8zM12 13c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+      }
+      if (buyNowBtn) {
+        buyNowBtn.disabled = false;
+        buyNowBtn.style.display = '';
+      }
+    } else {
+      if (addToCartBtn) {
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = 'Sold Out';
+      }
+      if (buyNowBtn) {
+        buyNowBtn.disabled = true;
+        buyNowBtn.style.display = 'none';
+      }
+    }
+  } else {
+    if (addToCartBtn) {
+      addToCartBtn.disabled = true;
+      addToCartBtn.textContent = 'Unavailable';
+    }
+    if (buyNowBtn) {
+      buyNowBtn.disabled = true;
+      buyNowBtn.style.display = 'none';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateVariantSelection();
+});
+</script>
+
+{% schema %}
+{
+  "name": "Product Details Redesign",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Product Details Redesign"
+    }
+  ]
+}
+{% endschema %}

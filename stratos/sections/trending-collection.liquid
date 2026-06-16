@@ -1,0 +1,92 @@
+<style>
+  .trending-section { padding: var(--spacing-xxxl) 0; }
+  @media (max-width: 600px) { .trending-section { padding: var(--spacing-xxl) 0; } }
+</style>
+
+<div class="trending-section container">
+  <div class="section-header">
+    <div class="section-header__left">
+      {% if section.settings.eyebrow != blank %}
+        <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+      {% endif %}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+    {% assign collection_handle = section.settings.collection | default: 'all' %}
+    <a href="{{ collections[collection_handle].url }}" class="section-header__link">
+      <span>View all</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none">
+        <path d="M3.333 10h13.334M11.667 5l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="product-grid">
+    {% assign collection_handle = section.settings.collection | default: 'all' %}
+    {% for product in collections[collection_handle].products limit: section.settings.limit %}
+      {% render 'product-card', product: product %}
+    {% else %}
+      {% for i in (1..4) %}
+        <div class="product-card">
+          <div class="product-card__image-wrapper">
+            {{ 'product-' | append: i | placeholder_svg_tag: 'product-card__image' }}
+          </div>
+          <div class="product-card__info">
+            <h3 class="product-card__title" style="min-height:auto;">Example Product</h3>
+            <div class="product-card__price-row">
+              <span class="product-card__price">$45.00</span>
+            </div>
+            <button class="quick-add-btn" disabled>Quick add</button>
+          </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Trending Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Selling out fast"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Trending now"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading",
+      "default": "The products dominating feeds this week."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "label": "Product Limit",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trending Collection"
+    }
+  ]
+}
+{% endschema %}
