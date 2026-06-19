@@ -1,0 +1,207 @@
+{% layout 'checkout' %}
+{% comment %} Fstore cart — Claude Design "Fstore Checkout" recreated as a real Shopify cart. {% endcomment %}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  @keyframes fs-pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
+  .fs{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; position:relative; overflow-x:hidden; }
+  .fs a{ color:inherit; text-decoration:none; }
+  .fs input::placeholder{ color:#5a5a61; }
+  .fs input:focus{ outline:none; border-color:#c6ff3a !important; }
+  .fs-wrap{ max-width:1100px; margin:0 auto; padding:0 clamp(16px,4vw,32px); position:relative; z-index:1; }
+  .fs-back:hover{ color:#c6ff3a; }
+  .fs-xp-apple:hover{ border-color:#444; } .fs-xp-paypal:hover{ filter:brightness(1.05); } .fs-xp-bizum:hover{ filter:brightness(1.06); }
+  .fs-promo-apply:hover{ background:#2e2e34; }
+  .fs-pay:active{ transform:translateY(3px); box-shadow:0 3px 0 #7fae00; }
+  .fs-step:hover{ border-color:#3a3a40; }
+  .fs-rm:hover{ color:#ff7aa6; }
+  @media (prefers-reduced-motion: reduce){ .fs *{ animation-duration:.001ms !important; } }
+</style>
+
+<div class="fs">
+  <div style="position:absolute; top:-160px; left:50%; transform:translateX(-50%); width:700px; height:460px; background:radial-gradient(ellipse at center, rgba(198,255,58,.12), transparent 65%); pointer-events:none; z-index:0;"></div>
+
+  <header style="position:sticky; top:0; z-index:20; background:rgba(11,11,12,.85); backdrop-filter:blur(14px); border-bottom:1px solid #1d1d20;">
+    <div class="fs-wrap" style="padding-top:13px; padding-bottom:13px; display:flex; align-items:center; gap:14px;">
+      <a href="{{ routes.root_url }}" style="font-family:'Archivo',sans-serif; font-weight:900; font-size:24px; letter-spacing:-.03em; display:flex; align-items:center;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+      <span style="display:flex; align-items:center; gap:7px; margin-left:auto; font-size:13px; color:#9a9aa1;">🔒 Pago seguro y cifrado</span>
+    </div>
+  </header>
+
+  <div class="fs-wrap" style="padding-top:18px; padding-bottom:4px;">
+    <a href="{{ routes.all_products_collection_url }}" class="fs-back" style="font-size:13px; color:#8a8a91;">← Seguir comprando</a>
+    <div style="display:flex; align-items:center; gap:10px; margin-top:12px; font-family:'Archivo',sans-serif; font-weight:800; font-size:12px; letter-spacing:.04em; text-transform:uppercase; color:#56565d;">
+      <span style="color:#c6ff3a;">Carrito</span><span>›</span><span>Pago</span><span>›</span><span>Confirmación</span>
+    </div>
+  </div>
+
+  {% if cart.item_count > 0 %}
+  <div class="fs-wrap" style="margin-top:14px;">
+    <div style="display:flex; align-items:center; gap:10px; background:rgba(255,46,110,.1); border:1px solid rgba(255,46,110,.4); border-radius:12px; padding:11px 15px; font-size:13px;">
+      <span style="width:9px; height:9px; border-radius:50%; background:#ff2e6e; animation:fs-pulse 1.2s ease-in-out infinite;"></span>
+      <span style="color:#ffb3cb;">Tu carrito está reservado durante</span>
+      <span id="resv" style="font-family:'Archivo',sans-serif; font-weight:900; color:#fff; font-variant-numeric:tabular-nums; margin-left:auto;">09:58</span>
+    </div>
+  </div>
+
+  <main class="fs-wrap" style="padding-top:22px; padding-bottom:140px; display:flex; flex-wrap:wrap; gap:clamp(22px,4vw,44px); align-items:flex-start;">
+    <!-- LEFT: cart lines + trust -->
+    <div style="flex:1 1 440px; min-width:0; display:flex; flex-direction:column; gap:22px;">
+      <div>
+        <h2 style="font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; text-transform:uppercase; letter-spacing:.03em; color:#9a9aa1; margin:0 0 12px;">Pago exprés en 1 toque</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px;">
+          <button type="button" data-pay class="fs-xp-apple" style="background:#000; color:#fff; border:1px solid #2a2a2e; border-radius:12px; padding:14px; font-weight:700; font-size:15px; cursor:pointer;"> Pay</button>
+          <button type="button" data-pay class="fs-xp-paypal" style="background:#ffc439; color:#0a0a0a; border:none; border-radius:12px; padding:14px; font-weight:800; font-size:15px; cursor:pointer; font-style:italic;">PayPal</button>
+          <button type="button" data-pay class="fs-xp-bizum" style="background:#00b9d4; color:#fff; border:none; border-radius:12px; padding:14px; font-family:'Archivo',sans-serif; font-weight:800; font-size:15px; cursor:pointer;">Bizum</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; margin:18px 0 4px;">
+          <div style="flex:1; height:1px; background:#232328;"></div>
+          <span style="font-size:12px; color:#6b6b73; text-transform:uppercase; letter-spacing:.06em;">o revisa tu pedido</span>
+          <div style="flex:1; height:1px; background:#232328;"></div>
+        </div>
+      </div>
+
+      <section style="background:#121214; border:1px solid #232328; border-radius:18px; padding:6px 20px;">
+        <div id="fsLines"></div>
+      </section>
+
+      <div style="display:flex; flex-wrap:wrap; gap:16px; padding:4px 2px; font-size:12px; color:#8a8a91;">
+        <span>🔒 Pago cifrado</span><span>↩️ Devolución 30 días</span><span>⭐ 4,8/5 · +12.000 pedidos</span><span>💬 Soporte WhatsApp</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: summary -->
+    <aside style="flex:1 1 330px; max-width:380px; position:sticky; top:84px; background:#121214; border:1px solid #232328; border-radius:20px; padding:20px;">
+      <h3 style="font-family:'Archivo',sans-serif; font-weight:900; font-size:18px; text-transform:uppercase; letter-spacing:-.01em; margin:0 0 4px;">Tu pedido</h3>
+      <div style="font-size:13px; color:#8a8a91; margin-bottom:16px;"><span id="fsCount">{{ cart.item_count }}</span> artículos</div>
+
+      <div style="display:flex; gap:8px; margin-bottom:16px;">
+        <input id="promoInput" placeholder="Código descuento (TIKTOK10)" style="flex:1; min-width:0; background:#0b0b0c; border:1px solid #2a2a2e; border-radius:10px; padding:11px 13px; color:#f5f5f4; font-size:14px; font-family:'Space Grotesk',sans-serif;">
+        <button id="promoApply" type="button" class="fs-promo-apply" style="background:#232328; color:#f5f5f4; border:none; border-radius:10px; padding:0 16px; font-weight:700; font-size:14px; cursor:pointer;">Aplicar</button>
+      </div>
+      <div id="promoMsg" style="font-size:12px; margin:-8px 0 14px; font-weight:600; display:none;"></div>
+
+      <div style="display:flex; flex-direction:column; gap:9px; padding-top:16px; border-top:1px solid #232328; font-size:14px;">
+        <div style="display:flex; justify-content:space-between; color:#a1a1aa;"><span>Subtotal</span><span id="fsSubtotal" style="color:#f5f5f4;">{{ cart.total_price | money }}</span></div>
+        <div style="display:flex; justify-content:space-between; color:#a1a1aa;"><span>Envío y descuentos</span><span style="color:#8a8a91;">Se calculan en el pago</span></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding-top:14px; border-top:1px solid #232328;">
+        <span style="font-family:'Archivo',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase;">Total</span>
+        <span id="fsTotal" style="font-family:'Archivo',sans-serif; font-weight:900; font-size:28px; color:#c6ff3a;">{{ cart.total_price | money }}</span>
+      </div>
+
+      <button type="button" data-pay class="fs-pay" style="width:100%; margin-top:18px; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:14px; padding:17px; font-family:'Archivo',sans-serif; font-weight:900; font-size:18px; text-transform:uppercase; cursor:pointer; box-shadow:0 6px 0 #7fae00;">Ir al pago seguro 🔒</button>
+      <div style="text-align:center; font-size:11px; color:#7a7a82; margin-top:12px;">Pago 100% seguro con Shopify · 💳 Visa · Mastercard · PayPal · Bizum</div>
+    </aside>
+  </main>
+
+  <!-- MOBILE STICKY PAY BAR -->
+  <div style="position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(11,11,12,.94); backdrop-filter:blur(12px); border-top:1px solid #232328; padding:12px clamp(16px,4vw,32px); display:flex; align-items:center; gap:14px;">
+    <div style="display:flex; flex-direction:column; line-height:1.1;">
+      <span style="font-size:11px; color:#8a8a91; text-transform:uppercase; letter-spacing:.04em;">Total</span>
+      <span id="fsTotalMobile" style="font-family:'Archivo',sans-serif; font-weight:900; font-size:22px; color:#c6ff3a;">{{ cart.total_price | money }}</span>
+    </div>
+    <button type="button" data-pay style="flex:1; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:13px; padding:15px; font-family:'Archivo',sans-serif; font-weight:900; font-size:16px; text-transform:uppercase; cursor:pointer;">Pagar ahora 🔒</button>
+  </div>
+
+  {% else %}
+  <main class="fs-wrap" style="padding-top:60px; padding-bottom:120px; text-align:center;">
+    <div style="font-size:60px; margin-bottom:14px;">🛒</div>
+    <h1 style="font-family:'Archivo',sans-serif; font-weight:900; font-size:28px; text-transform:uppercase; letter-spacing:-.02em; margin:0 0 10px;">Tu carrito está vacío</h1>
+    <p style="font-size:15px; color:#a1a1aa; margin:0 0 24px;">Aún no has añadido ningún viral. ¡Vamos a por ellos! 🔥</p>
+    <a href="{{ routes.all_products_collection_url }}" style="display:inline-block; background:#c6ff3a; color:#0b0b0c; border-radius:13px; padding:15px 28px; font-family:'Archivo',sans-serif; font-weight:900; font-size:16px; text-transform:uppercase; box-shadow:0 6px 0 #7fae00;">Ver productos virales →</a>
+  </main>
+  {% endif %}
+</div>
+
+<form id="fsCheckout" action="{{ routes.cart_url }}" method="post" hidden><button type="submit" name="checkout"></button></form>
+
+<script>
+(function(){
+  "use strict";
+  var cart = {{ cart | json }};
+  var CUR = {{ shop.currency | json }};
+  function money(cents){
+    try { return new Intl.NumberFormat('es-ES',{style:'currency',currency:CUR}).format((cents||0)/100); }
+    catch(e){ return ((cents||0)/100).toFixed(2) + ' ' + CUR; }
+  }
+  var state = { promoApplied:false, resvLeft: 9*60+58 };
+  var $ = function(id){ return document.getElementById(id); };
+  var linesEl = $('fsLines');
+  if (!linesEl) return; // empty cart
+
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+  function renderLines(){
+    linesEl.innerHTML = cart.items.map(function(it){
+      var img = it.image ? ('<img src="' + it.image.replace(/(\.[a-z]+)(\?|$)/i,'_120x$1$2') + '" alt="" width="58" height="58" style="width:58px;height:58px;object-fit:cover;border-radius:12px;background:#1a1a1d;flex:none;">')
+                         : '<div style="width:58px;height:58px;flex:none;border-radius:12px;background:repeating-linear-gradient(45deg,#1a1a1d 0 9px,#151517 9px 18px);"></div>';
+      var variant = (it.variant_title && it.variant_title !== 'Default Title') ? ('<div style="font-size:12px;color:#8a8a91;">' + esc(it.variant_title) + '</div>') : '';
+      return ''
+        + '<div style="display:flex; gap:13px; align-items:center; padding:14px 0; border-bottom:1px solid #1d1d20;">'
+        +   img
+        +   '<div style="flex:1; min-width:0;">'
+        +     '<div style="font-weight:600; font-size:13px; line-height:1.3;">' + esc(it.product_title) + '</div>'
+        +     variant
+        +     '<div style="display:flex; align-items:center; gap:8px; margin-top:7px;">'
+        +       '<button type="button" class="fs-step" data-key="' + esc(it.key) + '" data-qty="' + (it.quantity-1) + '" style="background:#1a1a1d; border:1px solid #2a2a2e; color:#cfcfd4; width:26px; height:26px; border-radius:7px; font-size:15px; cursor:pointer;">−</button>'
+        +       '<span style="font-size:13px; font-weight:700; min-width:18px; text-align:center;">' + it.quantity + '</span>'
+        +       '<button type="button" class="fs-step" data-key="' + esc(it.key) + '" data-qty="' + (it.quantity+1) + '" style="background:#1a1a1d; border:1px solid #2a2a2e; color:#cfcfd4; width:26px; height:26px; border-radius:7px; font-size:15px; cursor:pointer;">+</button>'
+        +       '<button type="button" class="fs-rm" data-key="' + esc(it.key) + '" data-qty="0" style="margin-left:8px; background:none; border:none; color:#6b6b73; font-size:12px; cursor:pointer; text-decoration:underline;">Quitar</button>'
+        +     '</div>'
+        +   '</div>'
+        +   '<span style="font-family:\'Archivo\',sans-serif; font-weight:800; font-size:14px; color:#f5f5f4;">' + money(it.final_line_price) + '</span>'
+        + '</div>';
+    }).join('');
+  }
+
+  function renderTotals(){
+    $('fsCount').textContent = cart.item_count;
+    var sub = money(cart.total_price);
+    $('fsSubtotal').textContent = sub;
+    $('fsTotal').textContent = sub;
+    var mt = $('fsTotalMobile'); if (mt) mt.textContent = sub;
+  }
+
+  function change(key, qty){
+    fetch('/cart/change.js', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id:key, quantity:qty })
+    }).then(function(r){ return r.json(); }).then(function(c){
+      cart = c;
+      if (!c.item_count){ window.location.reload(); return; }
+      renderLines(); renderTotals();
+    }).catch(function(){ window.location.reload(); });
+  }
+
+  function applyPromo(){
+    var code = ($('promoInput').value || '').trim().toUpperCase();
+    var pm = $('promoMsg');
+    if (code === 'TIKTOK10'){ state.promoApplied = true; pm.style.display='block'; pm.textContent='✅ TIKTOK10 se aplicará en el pago. Buen ojo.'; pm.style.color='#c6ff3a'; }
+    else if (!code){ pm.style.display='block'; pm.textContent='Escribe un código'; pm.style.color='#ff7aa6'; }
+    else { state.promoApplied = false; pm.style.display='block'; pm.textContent='❌ Código no válido. Prueba TIKTOK10'; pm.style.color='#ff7aa6'; }
+  }
+
+  function goCheckout(){
+    // Real Shopify secure checkout. If a promo was entered, apply it via Shopify's discount URL.
+    if (state.promoApplied){ window.location.href = '/discount/TIKTOK10?redirect=' + encodeURIComponent('/checkout'); }
+    else { $('fsCheckout').submit(); }
+  }
+
+  document.addEventListener('click', function(e){
+    var step = e.target.closest('[data-key]');
+    if (step){ change(step.getAttribute('data-key'), parseInt(step.getAttribute('data-qty'), 10)); return; }
+    var pay = e.target.closest('[data-pay]');
+    if (pay){ goCheckout(); }
+  });
+  $('promoApply').addEventListener('click', applyPromo);
+
+  setInterval(function(){
+    state.resvLeft = state.resvLeft > 0 ? state.resvLeft - 1 : 0;
+    var m = Math.floor(state.resvLeft/60), s = state.resvLeft%60;
+    var el = $('resv'); if (el) el.textContent = (m<10?'0':'')+m + ':' + (s<10?'0':'')+s;
+  }, 1000);
+
+  renderLines(); renderTotals();
+})();
+</script>
