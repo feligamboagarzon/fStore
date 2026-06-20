@@ -64,3 +64,55 @@ test('POST /api/products/:id saves cost', async () => {
   assert.equal(saved.cost, 7);
   server.close();
 });
+
+function harnessWithFailingStore() {
+  const store = {
+    getAll: () => ({ products: {}, orders: {} }),
+    upsertProduct: async () => { throw new Error('disk full'); },
+    upsertOrder: async () => { throw new Error('disk full'); },
+  };
+  const shopify = {
+    fetchProducts: async () => [],
+    fetchOrders: async () => [],
+  };
+  const app = createApp({ store, shopify, publicDir: tmpdir() });
+  const server = app.listen(0);
+  const base = `http://127.0.0.1:${server.address().port}`;
+  return { base, server };
+}
+
+test('POST /api/products/:id returns 500 when store.upsertProduct rejects', async () => {
+  const { base, server } = harnessWithFailingStore();
+  const res = await fetch(`${base}/api/products/99`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cost: 5 }),
+  });
+  assert.equal(res.status, 500);
+  const body = await res.json();
+  assert.ok(body.error, 'response should have an error field');
+  server.close();
+});
+
+test('POST /api/orders/:id returns 500 when store.upsertOrder rejects', async () => {
+  const { base, server } = harnessWithFailingStore();
+  const res = await fetch(`${base}/api/orders/O99`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ state: 'pedida' }),
+  });
+  assert.equal(res.status, 500);
+  const body = await res.json();
+  assert.ok(body.error, 'response should have an error field');
+  server.close();
+});
+
+test('POST /api/orders/:id still returns 400 for invalid state', async () => {
+  const { base, server } = harnessWithFailingStore();
+  const res = await fetch(`${base}/api/orders/O99`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ state: 'INVALID' }),
+  });
+  assert.equal(res.status, 400);
+  const body = await res.json();
+  assert.equal(body.error, 'invalid state');
+  server.close();
+});

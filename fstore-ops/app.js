@@ -46,23 +46,31 @@ export function createApp({ store, shopify, publicDir }) {
   });
 
   app.post('/api/products/:id', async (req, res) => {
-    const patch = {};
-    if (req.body.cost !== undefined) patch.cost = req.body.cost === '' || req.body.cost === null ? null : Number(req.body.cost);
-    if (req.body.sourceUrl !== undefined) patch.sourceUrl = req.body.sourceUrl;
-    if (req.body.notes !== undefined) patch.notes = req.body.notes;
-    res.json(await store.upsertProduct(req.params.id, patch));
+    try {
+      const patch = {};
+      if (req.body.cost !== undefined) patch.cost = req.body.cost === '' || req.body.cost === null ? null : Number(req.body.cost);
+      if (req.body.sourceUrl !== undefined) patch.sourceUrl = req.body.sourceUrl;
+      if (req.body.notes !== undefined) patch.notes = req.body.notes;
+      res.json(await store.upsertProduct(req.params.id, patch));
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
   app.post('/api/orders/:id', async (req, res) => {
-    const allowed = ['nueva', 'pedida', 'enviada', 'entregada', 'problema'];
-    const patch = {};
-    if (req.body.state !== undefined) {
-      if (!allowed.includes(req.body.state)) return res.status(400).json({ error: 'invalid state' });
-      patch.state = req.body.state;
+    try {
+      const allowed = ['nueva', 'pedida', 'enviada', 'entregada', 'problema'];
+      const patch = {};
+      if (req.body.state !== undefined) {
+        if (!allowed.includes(req.body.state)) return res.status(400).json({ error: 'invalid state' });
+        patch.state = req.body.state;
+      }
+      if (req.body.tracking !== undefined) patch.tracking = req.body.tracking;
+      if (req.body.notes !== undefined) patch.notes = req.body.notes;
+      res.json(await store.upsertOrder(req.params.id, patch));
+    } catch (e) {
+      res.status(500).json({ error: e.message });
     }
-    if (req.body.tracking !== undefined) patch.tracking = req.body.tracking;
-    if (req.body.notes !== undefined) patch.notes = req.body.notes;
-    res.json(await store.upsertOrder(req.params.id, patch));
   });
 
   app.use(express.static(publicDir));
