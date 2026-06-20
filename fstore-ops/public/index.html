@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fstore Ops</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Fstore Ops</h1>
+    <nav>
+      <button class="tab active" data-tab="productos">Productos</button>
+      <button class="tab" data-tab="ordenes">Órdenes</button>
+      <button id="refresh">↻ Actualizar</button>
+    </nav>
+  </header>
+  <div id="banner" class="banner hidden"></div>
+  <main>
+    <section id="productos" class="view">
+      <div id="prod-summary" class="summary"></div>
+      <div id="prod-table"></div>
+    </section>
+    <section id="ordenes" class="view hidden">
+      <div id="ord-summary" class="summary"></div>
+      <div id="ord-filters" class="filters"></div>
+      <div id="ord-list"></div>
+    </section>
+  </main>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
