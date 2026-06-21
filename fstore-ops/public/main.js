@@ -6,8 +6,8 @@ const STATES = [
   { id: 'problema', label: '⚠ Problema' },
 ];
 
-export const fmtMoney = (n) => (n == null ? '—' : `$${Number(n).toFixed(2)}`);
-export const marginClass = (pct) => (pct == null ? 'm-none' : pct >= 50 ? 'm-ok' : 'm-low');
+const fmtMoney = (n) => (n == null ? '—' : `$${Number(n).toFixed(2)}`);
+const marginClass = (pct) => (pct == null ? 'm-none' : pct >= 50 ? 'm-ok' : 'm-low');
 
 const $ = (sel) => document.querySelector(sel);
 let currentFilter = 'todos';

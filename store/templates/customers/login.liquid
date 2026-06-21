@@ -1,0 +1,92 @@
+{% layout 'checkout' %}
+{% comment %} Fstore Customer Login — split-screen shell (cuenta mockup). Real Shopify customer_login + recover_customer_password forms. {% endcomment %}
+<style>
+  .fsl *{ box-sizing:border-box; }
+  .fsl ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  .fsl{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; display:flex; flex-wrap:wrap; }
+  .fsl a{ color:inherit; text-decoration:none; }
+  .fsl-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.025em; }
+  .fsl-input{ width:100%; background:#151517; border:1px solid #2a2a2e; border-radius:11px; padding:14px; color:#f5f5f4; font-size:15px; font-family:'Space Grotesk',sans-serif; outline:none; }
+  .fsl-input:focus{ border-color:#c6ff3a; }
+  .fsl-input::placeholder{ color:#56565d; }
+  .fsl-btn{ width:100%; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:13px; padding:16px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase; letter-spacing:-.01em; cursor:pointer; box-shadow:0 5px 0 #7fae00; transition:background .12s; }
+  .fsl-btn:hover{ background:#d4ff5e; }
+  .fsl-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #7fae00; }
+  .fsl-link{ color:#c6ff3a; font-weight:700; }
+  /* #recover toggle: by default show login, hide recover. When URL hash = #recover, swap. */
+  #fsl-recover{ display:none; }
+  #fsl-recover:target{ display:block; }
+  #fsl-recover:target ~ #fsl-login{ display:none; }
+  @media (prefers-reduced-motion: reduce){ .fsl *{ animation-duration:.001ms !important; transition:none !important; } }
+</style>
+
+<div class="fsl">
+
+  <!-- LEFT BRAND PANEL -->
+  <div style="flex:1 1 420px; min-width:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#13150c,#0d0d0e 60%); border-right:1px solid #1d1d20; padding:clamp(28px,4vw,52px); display:flex; flex-direction:column;">
+    <div style="position:absolute; top:-140px; right:-120px; width:420px; height:420px; background:radial-gradient(circle at center, rgba(198,255,58,.16), transparent 65%); pointer-events:none;"></div>
+    <a href="{{ routes.root_url }}" class="fsl-h" style="position:relative; font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+    <div style="position:relative; margin-top:auto; padding-top:40px;">
+      <h2 class="fsl-h" style="font-size:clamp(28px,3.6vw,40px); line-height:.98; letter-spacing:-.03em; margin:0 0 22px; max-width:380px;">{{ 'auth.login_hero' | t }}</h2>
+      <div style="display:flex; flex-direction:column; gap:14px; max-width:360px;">
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">⚡</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_express_checkout' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">📦</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_track_orders' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">🔥</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_early_drops' | t }}</span></div>
+      </div>
+    </div>
+    <div style="position:relative; margin-top:36px; display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.03); border:1px solid #232328; border-radius:14px; padding:14px 16px; max-width:380px;">
+      <div class="fsl-h" style="width:40px; height:40px; flex:none; border-radius:50%; background:#ff2e6e; color:#fff; display:flex; align-items:center; justify-content:center;">L</div>
+      <div><div style="color:#d4ee5a; font-size:12px; letter-spacing:1px;">★★★★★</div><div style="font-size:13px; color:#cfcfd4; line-height:1.4; margin-top:2px;">{{ 'auth.testimonial' | t }}</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM AREA -->
+  <div style="flex:1 1 420px; min-width:0; display:flex; align-items:center; justify-content:center; padding:clamp(24px,4vw,52px); position:relative;">
+    <div style="width:100%; max-width:400px;">
+
+      <!-- ============ RECOVER view (#recover target) ============ -->
+      <div id="fsl-recover">
+        {% form 'recover_customer_password' %}
+          {% if form.posted_successfully? %}
+            <!-- SUCCESS: Revisa tu email -->
+            <div style="font-size:44px; line-height:1; margin-bottom:14px;">📩</div>
+            <h1 class="fsl-h" style="font-size:clamp(28px,4vw,38px); margin:0 0 8px;">{{ 'auth.login_recover_sent_title' | t }}</h1>
+            <p style="font-size:14px; color:#8a8a91; margin:0 0 26px; line-height:1.5;">{{ 'auth.login_recover_sent_body' | t }}</p>
+            <a href="{{ routes.account_login_url }}#" class="fsl-btn" style="display:block; text-align:center; text-decoration:none;">{{ 'auth.login_back_to_login' | t }}</a>
+          {% else %}
+            <a href="{{ routes.account_login_url }}#" style="display:inline-block; color:#8a8a91; font-size:13px; margin-bottom:18px;">{{ 'auth.login_back_to_signin' | t }}</a>
+            <h1 class="fsl-h" style="font-size:clamp(28px,4vw,38px); margin:0 0 8px;">{{ 'auth.login_recover_title' | t }}</h1>
+            <p style="font-size:14px; color:#8a8a91; margin:0 0 26px; line-height:1.5;">{{ 'auth.login_recover_body' | t }}</p>
+            {%- if form.errors -%}
+              <div style="background:rgba(255,46,110,.1); border:1px solid rgba(255,46,110,.4); color:#ff9cba; border-radius:10px; padding:11px 14px; font-size:13px; margin-bottom:16px; line-height:1.4;">{{ form.errors | default_errors }}</div>
+            {%- endif -%}
+            <label style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.email' | t }}</label>
+            <input type="email" name="email" placeholder="tu@email.com" autocorrect="off" autocapitalize="off" spellcheck="false" required class="fsl-input" style="margin-bottom:18px;">
+            <button type="submit" class="fsl-btn">{{ 'auth.login_send_link' | t }}</button>
+          {% endif %}
+        {% endform %}
+      </div>
+
+      <!-- ============ LOGIN view (default) ============ -->
+      <div id="fsl-login">
+        <h1 class="fsl-h" style="font-size:clamp(28px,4vw,38px); margin:0 0 8px;">{{ 'auth.login_title' | t }}</h1>
+        <p style="font-size:14px; color:#8a8a91; margin:0 0 26px;">{{ 'auth.login_no_account_html' | t: url: routes.account_register_url }}</p>
+        {% form 'customer_login' %}
+          {%- if form.errors -%}
+            <div style="background:rgba(255,46,110,.1); border:1px solid rgba(255,46,110,.4); color:#ff9cba; border-radius:10px; padding:11px 14px; font-size:13px; margin-bottom:16px; line-height:1.4;">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <label style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.email' | t }}</label>
+          <input type="email" name="customer[email]" placeholder="tu@email.com" autocorrect="off" autocapitalize="off" spellcheck="false" required class="fsl-input" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
+            <label style="font-size:13px; color:#a1a1aa;">{{ 'auth.password' | t }}</label>
+            <a href="#fsl-recover" style="color:#8a8a91; font-size:12px;">{{ 'auth.login_forgot' | t }}</a>
+          </div>
+          <input type="password" name="customer[password]" placeholder="••••••••" required class="fsl-input" style="margin-bottom:18px;">
+          <button type="submit" class="fsl-btn">{{ 'auth.login_submit' | t }}</button>
+        {% endform %}
+      </div>
+
+      <div style="text-align:center; font-size:12px; color:#56565d; margin-top:26px;">🔒 {{ 'auth.encrypted_safe' | t }}</div>
+    </div>
+  </div>
+</div>

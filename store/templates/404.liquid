@@ -1,0 +1,64 @@
+{% layout 'checkout' %}
+{% comment %} Fstore 404 — Claude Design recreated. Mostly static; shortcut links wired to real collections + search route. {% endcomment %}
+{%- assign all_url = routes.all_products_collection_url | default: '/collections/all' -%}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  @keyframes fs-pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
+  @keyframes fs-float{ 0%,100%{ transform:translateY(0) rotate(var(--r,0deg)); } 50%{ transform:translateY(-14px) rotate(var(--r,0deg)); } }
+  @keyframes fs-glitch{
+    0%,90%,100%{ transform:translate(0,0); }
+    92%{ transform:translate(-3px,2px); }
+    94%{ transform:translate(3px,-2px); }
+    96%{ transform:translate(-2px,-1px); }
+    98%{ transform:translate(2px,1px); }
+  }
+  .fs404{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .fs404 a{ color:inherit; text-decoration:none; }
+  .fs404-h{ font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:-.025em; }
+  .fs404-key{ box-shadow:0 6px 0 #7fae00; transition:background .15s, transform .08s, box-shadow .08s; }
+  .fs404-key:hover{ background:#d4ff5e; }
+  .fs404-key:active{ transform:translateY(3px); box-shadow:0 3px 0 #7fae00; }
+  .fs404-ghost:hover{ border-color:#c6ff3a; color:#c6ff3a; }
+  .fs404-card:hover{ border-color:#3a3a40; background:#16161a; }
+  @media (prefers-reduced-motion: reduce){ .fs404 *{ animation:none !important; } }
+</style>
+
+<div class="fs404">
+  <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:760px; height:600px; max-width:120vw; background:radial-gradient(ellipse at center, rgba(255,46,110,.14), transparent 62%); pointer-events:none; z-index:0;"></div>
+  <div style="position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:600px; height:400px; max-width:110vw; background:radial-gradient(ellipse at center, rgba(198,255,58,.12), transparent 65%); pointer-events:none; z-index:0;"></div>
+
+  <!-- HEADER -->
+  <header style="position:relative; z-index:10; padding:16px clamp(16px,4vw,32px);">
+    <a href="{{ routes.root_url }}" class="fs404-h" style="font-size:24px; letter-spacing:-.03em; display:inline-flex; align-items:center;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+  </header>
+
+  <!-- BODY -->
+  <main style="position:relative; z-index:1; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px clamp(16px,4vw,32px) 60px;">
+    <div style="position:relative; margin-bottom:8px;">
+      <div class="fs404-h" style="position:absolute; top:-6px; left:-86px; background:#c6ff3a; color:#0b0b0c; font-size:13px; padding:8px 12px; border-radius:11px; transform:rotate(-12deg); --r:-12deg; animation:fs-float 4s ease-in-out infinite; white-space:nowrap;">{{ 'notfound.badge_lost' | t }}</div>
+      <div class="fs404-h" style="position:absolute; top:30px; right:-92px; background:#25f4ee; color:#0b0b0c; font-size:13px; padding:8px 12px; border-radius:11px; transform:rotate(9deg); --r:9deg; animation:fs-float 5s ease-in-out infinite .5s; white-space:nowrap;">{{ 'notfound.badge_notviral' | t }}</div>
+      <h1 class="fs404-h" style="font-size:clamp(110px,26vw,240px); line-height:.82; letter-spacing:-.05em; margin:0; color:#c6ff3a; animation:fs-glitch 4s steps(1) infinite;">404</h1>
+    </div>
+
+    <h2 class="fs404-h" style="font-size:clamp(24px,4.5vw,38px); text-transform:uppercase; letter-spacing:-.025em; margin:14px 0 12px;">{{ 'notfound.heading' | t }}</h2>
+    <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.55; max-width:420px; margin:0 0 30px;">{{ 'notfound.subheading' | t }}</p>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:44px;">
+      <a href="{{ routes.root_url }}" class="fs404-h fs404-key" style="background:#c6ff3a; color:#0b0b0c; border-radius:14px; padding:16px 30px; font-size:16px; text-transform:uppercase;">{{ 'notfound.cta_home' | t }}</a>
+      <a href="{{ routes.search_url }}" class="fs404-ghost" style="background:transparent; color:#f5f5f4; border:1px solid #2a2a2e; border-radius:14px; padding:16px 26px; font-family:'Archivo',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase; display:inline-flex; align-items:center; gap:8px; transition:border-color .15s, color .15s;">🔎 {{ 'notfound.cta_search' | t }}</a>
+    </div>
+
+    <!-- SHORTCUTS → real collections -->
+    <div style="width:100%; max-width:680px;">
+      <div class="fs404-h" style="font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#8a8a91; margin-bottom:14px; display:flex; align-items:center; gap:8px; justify-content:center;"><span style="width:7px; height:7px; border-radius:50%; background:#ff2e6e; animation:fs-pulse 1.2s ease-in-out infinite;"></span> {{ 'notfound.shortcuts_label' | t }}</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:11px;">
+        {%- assign cards = '🔥|notfound.card_trending,🔌|notfound.card_gadgets,💄|notfound.card_beauty,✨|notfound.card_new' | split: ',' -%}
+        {% for c in cards %}{% assign p = c | split: '|' %}<a href="{{ all_url }}" class="fs404-card" style="display:flex; align-items:center; gap:11px; background:#121214; border:1px solid #232328; border-radius:14px; padding:15px 16px; text-align:left; transition:border-color .15s, background .15s;"><span style="font-size:22px;">{{ p[0] }}</span><span style="font-family:'Archivo',sans-serif; font-weight:800; font-size:14px;">{{ p[1] | t }}</span></a>{% endfor %}
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="position:relative; z-index:1; padding:22px; text-align:center; font-size:12px; color:#56565d; border-top:1px solid #1d1d20;">© {{ 'now' | date: '%Y' }} {{ shop.name | default: 'Fstore' }} · {{ 'notfound.footer_tagline' | t }}</footer>
+</div>

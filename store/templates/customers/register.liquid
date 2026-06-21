@@ -1,0 +1,81 @@
+{% layout 'checkout' %}
+{% comment %} Fstore — Customer REGISTER (Claude Design "Cuenta"). Split-screen shell + real Shopify create_customer form. {% endcomment %}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  .fsr{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; display:flex; flex-wrap:wrap; }
+  .fsr a{ color:inherit; text-decoration:none; }
+  .fsr-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.03em; }
+  .fsr-in{ width:100%; background:#151517; border:1px solid #2a2a2e; border-radius:11px; padding:14px; color:#f5f5f4; font-size:15px; font-family:'Space Grotesk',sans-serif; }
+  .fsr-in::placeholder{ color:#56565d; }
+  .fsr-in:focus{ border-color:#c6ff3a; outline:none; }
+  .fsr-btn{ width:100%; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:13px; padding:16px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase; cursor:pointer; box-shadow:0 5px 0 #7fae00; transition:background .12s; }
+  .fsr-btn:hover{ background:#d4ff5e; }
+  .fsr-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #7fae00; }
+  .fsr-link{ color:#c6ff3a; font-weight:700; }
+</style>
+
+<div class="fsr">
+
+  <!-- LEFT BRAND PANEL -->
+  <div style="flex:1 1 420px; min-width:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#13150c,#0d0d0e 60%); border-right:1px solid #1d1d20; padding:clamp(28px,4vw,52px); display:flex; flex-direction:column;">
+    <div style="position:absolute; top:-140px; right:-120px; width:420px; height:420px; background:radial-gradient(circle at center, rgba(198,255,58,.16), transparent 65%); pointer-events:none;"></div>
+    <a href="{{ routes.root_url }}" class="fsr-h" style="position:relative; font-size:26px; display:flex; align-items:center;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+    <div style="position:relative; margin-top:auto; padding-top:40px;">
+      <h2 class="fsr-h" style="font-size:clamp(28px,3.6vw,40px); line-height:.98; margin:0 0 22px; max-width:380px;">{{ 'auth.register_hero' | t }}</h2>
+      <div style="display:flex; flex-direction:column; gap:14px; max-width:360px;">
+        {% assign perk_emojis = '🎁,❤️,🚚' | split: ',' %}
+        {% assign perk_labels = 'auth.register_perk_discount,auth.register_perk_wishlist,auth.register_perk_shipping' | split: ',' %}
+        {% for emoji in perk_emojis %}
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">{{ emoji }}</span><span style="font-size:14px; color:#d4d4db;">{{ perk_labels[forloop.index0] | t }}</span></div>
+        {% endfor %}
+      </div>
+    </div>
+    <div style="position:relative; margin-top:36px; display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.03); border:1px solid #232328; border-radius:14px; padding:14px 16px; max-width:380px;">
+      <div class="fsr-h" style="width:40px; height:40px; flex:none; border-radius:50%; background:#ff2e6e; color:#fff; display:flex; align-items:center; justify-content:center;">L</div>
+      <div><div style="color:#d4ee5a; font-size:12px; letter-spacing:1px;">★★★★★</div><div style="font-size:13px; color:#cfcfd4; line-height:1.4; margin-top:2px;">{{ 'auth.testimonial' | t }}</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM AREA -->
+  <div style="flex:1 1 420px; min-width:0; display:flex; align-items:center; justify-content:center; padding:clamp(24px,4vw,52px); position:relative;">
+    <div style="width:100%; max-width:400px;">
+
+      <h1 class="fsr-h" style="font-size:clamp(28px,4vw,38px); letter-spacing:-.025em; margin:0 0 8px;">{{ 'auth.register_title' | t }}</h1>
+      <p style="font-size:14px; color:#8a8a91; margin:0 0 26px;">{{ 'auth.register_have_account_html' | t: url: routes.account_login_url }}</p>
+
+      {% form 'create_customer' %}
+
+        {%- if form.errors -%}
+        <div style="background:rgba(255,46,110,.1); border:1px solid rgba(255,46,110,.4); color:#ff9cba; border-radius:10px; padding:11px 14px; font-size:13px; margin-bottom:18px;">
+          {{ form.errors | default_errors }}
+        </div>
+        {%- endif -%}
+
+        <label for="fsr-first" style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.register_first_name' | t }}</label>
+        <input type="text" id="fsr-first" name="customer[first_name]" placeholder="{{ 'auth.register_first_name_placeholder' | t }}" autocomplete="given-name" required class="fsr-in" style="margin-bottom:16px;">
+
+        <label for="fsr-last" style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.register_last_name' | t }} <span style="color:#56565d;">{{ 'auth.register_optional' | t }}</span></label>
+        <input type="text" id="fsr-last" name="customer[last_name]" placeholder="{{ 'auth.register_last_name_placeholder' | t }}" autocomplete="family-name" class="fsr-in" style="margin-bottom:16px;">
+
+        <label for="fsr-email" style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.email' | t }}</label>
+        <input type="email" id="fsr-email" name="customer[email]" placeholder="tu@email.com" autocomplete="email" required class="fsr-in" style="margin-bottom:16px;">
+
+        <label for="fsr-pass" style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.password' | t }}</label>
+        <input type="password" id="fsr-pass" name="customer[password]" placeholder="{{ 'auth.password_min_placeholder' | t }}" autocomplete="new-password" required class="fsr-in" style="margin-bottom:18px;">
+
+        <label style="display:flex; align-items:flex-start; gap:10px; font-size:13px; color:#a1a1aa; margin-bottom:20px; cursor:pointer;">
+          <input type="checkbox" required style="margin-top:2px; flex:none; accent-color:#c6ff3a; width:16px; height:16px;">
+          <span>{{ 'auth.register_terms' | t }}</span>
+        </label>
+
+        <button type="submit" class="fsr-btn">{{ 'auth.register_submit' | t }}</button>
+
+        <p style="text-align:center; font-size:13px; color:#c6ff3a; font-weight:600; margin:16px 0 0;">🎁 {{ 'auth.register_discount_note' | t }}</p>
+
+      {% endform %}
+
+      <div style="text-align:center; font-size:12px; color:#56565d; margin-top:26px;">🔒 {{ 'auth.encrypted_safe' | t }}</div>
+    </div>
+  </div>
+</div>

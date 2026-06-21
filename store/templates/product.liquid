@@ -1,0 +1,499 @@
+{% layout 'checkout' %}
+{% comment %} Fstore Producto (PDP) — Claude Design recreated in clean Liquid, wired to live Shopify product data. {% endcomment %}
+{%- assign cur = product.selected_or_first_available_variant -%}
+{%- assign rel = product.collections.first -%}
+{%- unless rel and rel.products.size > 0 -%}{%- assign rel = collections['all'] -%}{%- endunless -%}
+{%- assign has_disc = false -%}
+{%- if product.compare_at_price > product.price -%}{%- assign has_disc = true -%}{%- assign disc = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}{%- assign saves = product.compare_at_price | minus: product.price -%}{%- endif -%}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  @keyframes fs-marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  @keyframes fs-pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
+  @keyframes fs-float{ 0%,100%{ transform:translateY(0) rotate(var(--r,0deg)); } 50%{ transform:translateY(-10px) rotate(var(--r,0deg)); } }
+  .fs{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; overflow-x:hidden; position:relative; }
+  .fs a{ color:inherit; text-decoration:none; }
+  .fs-w{ max-width:1100px; margin:0 auto; padding-left:clamp(16px,4vw,32px); padding-right:clamp(16px,4vw,32px); position:relative; z-index:1; }
+  .fs-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.025em; }
+  .fs-scroll{ display:flex; overflow-x:auto; scroll-snap-type:x mandatory; }
+  .fs-scroll::-webkit-scrollbar{ height:8px; } .fs-scroll::-webkit-scrollbar-thumb{ background:#2a2a2e; border-radius:8px; }
+  .fs-chip:hover{ border-color:#c6ff3a; background:#1b1b1e; }
+  .fs-add:hover{ background:#d4ff5e; }
+  .fs-pcard:hover{ border-color:#3a3a40; }
+  .fs-nav a:hover{ color:#c6ff3a; }
+  .fs-pdp-thumb:hover{ border-color:#3a3a40; }
+  .fs-pdp-thumb.is-active{ border-color:#c6ff3a; }
+  .fs-pdp-key{ box-shadow:0 6px 0 #7fae00; transition:transform .05s,box-shadow .05s,background .15s; }
+  .fs-pdp-key:hover{ background:#d4ff5e; }
+  .fs-pdp-key:active{ transform:translateY(3px); box-shadow:0 3px 0 #7fae00; }
+  .fs-pdp-key:disabled{ background:#26262b; color:#8a8a91; box-shadow:none; cursor:not-allowed; }
+  .fs-pdp-key2:hover{ background:rgba(198,255,58,.08); }
+  .fs-opt-label{ cursor:pointer; }
+  .fs-opt-input{ position:absolute; opacity:0; width:0; height:0; }
+  .fs-opt-input:checked + .fs-opt-label{ border-color:#c6ff3a; background:#1d2410; color:#fff; }
+  .fs-sw-input{ position:absolute; opacity:0; width:0; height:0; }
+  .fs-sw-input:checked + .fs-sw-label{ outline:2px solid #c6ff3a; outline-offset:2px; }
+  .fs-pack{ display:flex; align-items:center; gap:13px; text-align:left; width:100%; border:2px solid #232328; background:#121214; border-radius:14px; padding:13px 15px; cursor:pointer; position:relative; transition:border-color .12s,background .12s; }
+  .fs-pack-radio{ width:20px; height:20px; flex:none; border-radius:50%; border:2px solid #3a3a40; background:transparent; transition:border-color .12s,background .12s; }
+  .fs-pack.is-active{ border-color:#c6ff3a; background:rgba(198,255,58,.06); }
+  .fs-pack.is-active .fs-pack-radio{ border-color:#c6ff3a; background:#c6ff3a; }
+  .fs-faq-q{ width:100%; display:flex; align-items:center; gap:12px; text-align:left; background:none; border:none; cursor:pointer; padding:16px 18px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; color:#f5f5f4; }
+  .fs-faq-plus{ margin-left:auto; flex:none; color:#c6ff3a; font-size:22px; line-height:1; transition:transform .2s; }
+  .fs-faq.is-open .fs-faq-plus{ transform:rotate(45deg); }
+  .fs-faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+  .fs-faq.is-open .fs-faq-a{ max-height:320px; }
+  @media (prefers-reduced-motion: reduce){ .fs *{ animation:none !important; } }
+</style>
+
+<div class="fs">
+  <div style="position:absolute; top:-160px; left:50%; transform:translateX(-50%); width:700px; height:460px; background:radial-gradient(ellipse at center, rgba(198,255,58,.12), transparent 65%); pointer-events:none; z-index:0;"></div>
+  <div style="position:absolute; top:560px; right:-160px; width:520px; height:520px; background:radial-gradient(circle at center, rgba(255,46,110,.12), transparent 65%); pointer-events:none; z-index:0;"></div>
+
+  <!-- MARQUEE -->
+  <div style="background:#c6ff3a; color:#0b0b0c; overflow:hidden; white-space:nowrap; position:relative; z-index:2; border-bottom:2px solid #0b0b0c;">
+    <div style="display:inline-flex; gap:28px; padding:9px 0; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase; animation:fs-marquee 22s linear infinite;">
+      {% for i in (1..2) %}<span>{{ 'product.marquee_free_shipping' | t }}</span><span>★</span><span>{{ 'product.marquee_returns' | t }}</span><span>★</span><span>{{ 'product.marquee_orders_shipped' | t }}</span><span>★</span><span>{{ 'product.marquee_delivery' | t }}</span><span>★</span><span>{{ 'product.marquee_secure_payment' | t }}</span><span>★</span>{% endfor %}
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header style="position:sticky; top:0; z-index:20; background:rgba(11,11,12,.82); backdrop-filter:blur(14px); border-bottom:1px solid #1d1d20;">
+    <div class="fs-w" style="display:flex; align-items:center; gap:18px; padding-top:12px; padding-bottom:12px;">
+      <a href="{{ routes.root_url }}" class="fs-h" style="font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+      <form action="{{ routes.search_url }}" method="get" style="flex:1; max-width:440px; display:none; align-items:center; gap:8px; background:#151517; border:1px solid #26262b; border-radius:999px; padding:9px 16px;" class="fs-search">
+        <span style="opacity:.5;">🔎</span><input name="q" placeholder="{{ 'product.search_placeholder' | t }}" style="flex:1; background:none; border:none; outline:none; color:#f5f5f4; font-size:14px; font-family:'Space Grotesk',sans-serif;">
+      </form>
+      <nav class="fs-nav" style="display:flex; gap:20px; margin-left:auto; font-size:14px; font-weight:500;">
+        <a href="{{ routes.root_url }}#trending" style="color:#cfcfd4;" class="fs-deskonly">{{ 'product.nav_trending' | t }}</a>
+        <a href="{{ routes.root_url }}#tiktok" style="color:#cfcfd4;" class="fs-deskonly">{{ 'product.nav_tiktok' | t }}</a>
+        <a href="{{ routes.cart_url }}" style="display:flex; align-items:center; gap:8px; background:#c6ff3a; color:#0b0b0c; border-radius:999px; padding:10px 16px; font-family:'Archivo',sans-serif; font-weight:800;">🛒 <span style="font-variant-numeric:tabular-nums;">{{ cart.item_count }}</span></a>
+      </nav>
+    </div>
+  </header>
+  <style>@media(min-width:760px){ .fs-search{display:flex !important;} } @media(max-width:600px){ .fs-deskonly{display:none;} } @media(min-width:880px){ .fs-pdp-grid{ grid-template-columns:1fr 1fr !important; } .fs-pdp-sticky{ position:sticky !important; } }</style>
+
+  <!-- BREADCRUMB -->
+  <div class="fs-w" style="padding-top:16px; font-size:13px; color:#8a8a91;">
+    <a href="{{ routes.root_url }}">{{ 'product.breadcrumb_home' | t }}</a> <span style="color:#56565d;">/</span> <a href="{{ rel.url | default: routes.all_products_collection_url }}">{% if rel.title != blank %}{{ rel.title }}{% else %}{{ 'product.breadcrumb_products' | t }}{% endif %}</a> <span style="color:#56565d;">/</span> <span style="color:#cfcfd4;">{{ product.title | truncatewords: 5 }}</span>
+  </div>
+
+  <!-- MAIN: GALLERY + BUY BOX -->
+  <main class="fs-w fs-pdp-grid" style="display:grid; grid-template-columns:1fr; gap:clamp(22px,4vw,48px); padding-top:18px; padding-bottom:clamp(28px,4vw,48px); align-items:start;">
+
+    <!-- GALLERY (sticky) -->
+    <div class="fs-pdp-sticky" style="top:80px;">
+      <div style="position:relative; aspect-ratio:1/1; border-radius:22px; overflow:hidden; border:1px solid #26262b; background:repeating-linear-gradient(45deg,#161618 0 14px,#121214 14px 28px);">
+        <span class="fs-h" style="position:absolute; top:14px; left:14px; z-index:3; background:#ff2e6e; color:#fff; font-size:12px; padding:6px 10px; border-radius:7px; transform:rotate(-4deg); box-shadow:0 6px 16px rgba(255,46,110,.4);">{{ 'product.badge_number_one_tiktok' | t }}</span>
+        {% if has_disc %}<span class="fs-h" style="position:absolute; top:14px; right:14px; z-index:3; background:#c6ff3a; color:#0b0b0c; font-size:13px; padding:6px 10px; border-radius:7px;">-{{ disc }}%</span>{% endif %}
+        {% if product.media.size > 0 %}
+          {% for media in product.media %}
+            <img class="fs-pdp-main" data-idx="{{ forloop.index0 }}" src="{{ media | image_url: width: 1000 }}" alt="{{ media.alt | escape | default: product.title | escape }}" width="1000" height="1000" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:{% if forloop.first %}1{% else %}0{% endif %}; transition:opacity .2s; pointer-events:none;">
+          {% endfor %}
+        {% elsif product.featured_image %}
+          <img class="fs-pdp-main" data-idx="0" src="{{ product.featured_image | image_url: width: 1000 }}" alt="{{ product.title | escape }}" width="1000" height="1000" loading="eager" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">
+        {% else %}
+          <span class="fs-h" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; letter-spacing:.1em; color:#56565d;">{{ 'product.image_placeholder' | t }}</span>
+        {% endif %}
+      </div>
+      {% if product.media.size > 1 %}
+        <div class="fs-scroll" style="gap:10px; margin-top:12px; padding-bottom:4px;">
+          {% for media in product.media %}
+            <button type="button" class="fs-pdp-thumb {% if forloop.first %}is-active{% endif %}" data-idx="{{ forloop.index0 }}" style="flex:1 0 64px; max-width:90px; aspect-ratio:1/1; padding:0; border-radius:13px; overflow:hidden; border:2px solid {% if forloop.first %}#c6ff3a{% else %}#26262b{% endif %}; background:#151517; cursor:pointer; scroll-snap-align:start;">
+              <img src="{{ media | image_url: width: 200 }}" alt="{{ media.alt | escape }}" width="200" height="200" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- BUY BOX -->
+    <div style="display:flex; flex-direction:column;">
+      {% if product.vendor != blank %}<div style="font-size:13px; color:#8a8a91; margin-bottom:8px; text-transform:uppercase; letter-spacing:.06em;">{{ product.vendor }}</div>{% endif %}
+      <h1 class="fs-h" style="font-size:clamp(28px,4.5vw,40px); line-height:1; letter-spacing:-.025em; margin:0 0 12px;">{{ product.title }}</h1>
+
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:14px; font-size:14px;">
+        <span style="color:#d6d6db;">⭐ 4,9 <a href="#reviews" style="color:#8a8a91; text-decoration:underline;">{{ 'product.rating_reviews_count' | t }}</a></span>
+        <span style="color:#ff7aa6; font-weight:600;">{{ 'product.sold_this_week' | t }}</span>
+      </div>
+
+      <!-- LIVE VIEWERS CHIP -->
+      <div style="display:flex; align-items:center; gap:9px; background:#151517; border:1px solid #26262b; border-radius:11px; padding:9px 13px; font-size:13px; color:#d6d6db; align-self:flex-start; max-width:100%; margin-bottom:18px;">
+        <span style="width:9px; height:9px; border-radius:50%; background:#25f4ee; animation:fs-pulse 1.4s ease-in-out infinite; flex:none;"></span>
+        👀 <strong id="fsViewers" style="color:#fff; font-variant-numeric:tabular-nums;">1.284</strong> {{ 'product.viewers_now' | t }}
+      </div>
+
+      <!-- PRICE -->
+      <div style="display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;">
+        <span class="fs-h fs-pdp-price" style="font-size:clamp(34px,5vw,46px); color:#c6ff3a; line-height:1;">{{ product.price | money }}</span>
+        {% if has_disc %}
+          <span class="fs-pdp-compare" style="font-size:18px; color:#6b6b73; text-decoration:line-through;">{{ product.compare_at_price | money }}</span>
+          <span class="fs-h fs-pdp-disc" style="background:#c6ff3a; color:#0b0b0c; font-size:13px; padding:5px 9px; border-radius:6px; transform:rotate(-3deg);">-{{ disc }}%</span>
+        {% endif %}
+      </div>
+      {% if has_disc %}<div class="fs-pdp-saves" style="font-size:13px; color:#c6ff3a; font-weight:600; margin-bottom:18px;">💸 {{ 'product.you_save' | t }} {{ saves | money }}</div>{% else %}<div style="margin-bottom:18px;"></div>{% endif %}
+
+      <!-- COUNTDOWN BAR -->
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:rgba(255,46,110,.08); border:1px solid rgba(255,46,110,.35); border-radius:13px; padding:12px 15px; margin-bottom:20px;">
+        <span class="fs-h" style="font-size:12px; letter-spacing:.04em; color:#ff7aa6;">⏳ {{ 'product.offer_ends_in' | t }}</span>
+        <span class="fs-h" id="fsCd" style="margin-left:auto; font-size:20px; color:#fff; font-variant-numeric:tabular-nums;">04:37:12</span>
+      </div>
+
+      <!-- ADD-TO-CART FORM (wraps variant + pack + CTAs) -->
+      <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" id="fsForm">
+        <input type="hidden" name="id" id="fsVariantId" value="{{ cur.id }}">
+        <input type="hidden" name="quantity" id="fsQty" value="1">
+
+        {% unless product.has_only_default_variant %}
+          <div style="display:flex; flex-direction:column; gap:18px; margin-bottom:20px;">
+            {% for option in product.options_with_values %}
+              {% assign oname = option.name | downcase %}
+              <div class="fs-opt-group" data-position="{{ option.position }}">
+                <div style="font-size:13px; color:#a1a1aa; margin-bottom:10px;">{{ option.name }}: <strong class="fs-opt-selected" style="color:#f5f5f4;">{{ option.selected_value }}</strong></div>
+                {% if oname == 'color' or oname == 'colour' %}
+                  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    {% for value in option.values %}
+                      {% assign vd = value | downcase %}
+                      {% assign sw = '#cfcfd4' %}
+                      {% if vd contains 'white' or vd contains 'blanco' %}{% assign sw = '#e8e8e6' %}{% elsif vd contains 'black' or vd contains 'negro' %}{% assign sw = '#16161a' %}{% elsif vd contains 'blue' or vd contains 'azul' %}{% assign sw = '#3b82f6' %}{% elsif vd contains 'pink' or vd contains 'rosa' %}{% assign sw = '#ff2e6e' %}{% elsif vd contains 'green' or vd contains 'verde' %}{% assign sw = '#c6ff3a' %}{% elsif vd contains 'red' or vd contains 'rojo' %}{% assign sw = '#ef4444' %}{% elsif vd contains 'purple' or vd contains 'morado' or vd contains 'lila' %}{% assign sw = '#a855f7' %}{% elsif vd contains 'gold' or vd contains 'oro' %}{% assign sw = '#e0b873' %}{% elsif vd contains 'gray' or vd contains 'grey' or vd contains 'gris' %}{% assign sw = '#8a8a91' %}{% endif %}
+                      <input type="radio" class="fs-sw-input fs-opt-radio" name="options[{{ option.name | escape }}]" id="fsopt-{{ option.position }}-{{ forloop.index0 }}" value="{{ value | escape }}" data-position="{{ option.position }}" {% if option.selected_value == value %}checked{% endif %}>
+                      <label for="fsopt-{{ option.position }}-{{ forloop.index0 }}" class="fs-sw-label" title="{{ value | escape }}" style="display:inline-block; width:42px; height:42px; border-radius:11px; background:{{ sw }}; border:1px solid #3a3a40; cursor:pointer;"></label>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <div style="display:flex; gap:9px; flex-wrap:wrap;">
+                    {% for value in option.values %}
+                      <input type="radio" class="fs-opt-input fs-opt-radio" name="options[{{ option.name | escape }}]" id="fsopt-{{ option.position }}-{{ forloop.index0 }}" value="{{ value | escape }}" data-position="{{ option.position }}" {% if option.selected_value == value %}checked{% endif %}>
+                      <label for="fsopt-{{ option.position }}-{{ forloop.index0 }}" class="fs-opt-label" style="display:inline-block; background:#151517; border:1px solid #26262b; border-radius:11px; padding:10px 16px; font-size:14px; font-weight:600; color:#cfcfd4; transition:border-color .12s,background .12s;">{{ value }}</label>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endunless %}
+
+        <!-- PACK SELECTOR (maps to quantity; honest price = product.price * qty) -->
+        <div style="margin-bottom:22px; display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:13px; color:#a1a1aa;">{{ 'product.choose_pack' | t }}</div>
+          {%- assign p2 = product.price | times: 2 -%}
+          {%- assign p3 = product.price | times: 3 -%}
+          <button type="button" class="fs-pack is-active" data-qty="1" aria-pressed="true">
+            <span class="fs-pack-radio"></span>
+            <div style="flex:1;"><div style="font-weight:700; font-size:15px; color:#f5f5f4;">{{ 'product.pack_x1_title' | t }}</div><div style="font-size:12px; color:#8a8a91;">{{ 'product.pack_x1_sub' | t }}</div></div>
+            <div style="text-align:right;"><div class="fs-h" style="font-size:17px; color:#c6ff3a;">{{ product.price | money }}</div></div>
+          </button>
+          <button type="button" class="fs-pack" data-qty="2" aria-pressed="false">
+            <span class="fs-pack-radio"></span>
+            <div style="flex:1;"><div style="font-weight:700; font-size:15px; color:#f5f5f4;">{{ 'product.pack_x2_title' | t }}</div><div style="font-size:12px; color:#8a8a91;">{{ 'product.pack_x2_sub' | t }}</div></div>
+            <div style="text-align:right;"><div class="fs-h" style="font-size:17px; color:#c6ff3a;">{{ p2 | money }}</div><div style="font-size:11px; color:#0b0b0c; background:#c6ff3a; font-weight:800; padding:1px 7px; border-radius:999px; display:inline-block; margin-top:3px;">{{ 'product.badge_most_popular' | t }}</div></div>
+          </button>
+          <button type="button" class="fs-pack" data-qty="3" aria-pressed="false">
+            <span class="fs-pack-radio"></span>
+            <div style="flex:1;"><div style="font-weight:700; font-size:15px; color:#f5f5f4;">{{ 'product.pack_x3_title' | t }}</div><div style="font-size:12px; color:#8a8a91;">{{ 'product.pack_x3_sub' | t }}</div></div>
+            <div style="text-align:right;"><div class="fs-h" style="font-size:17px; color:#c6ff3a;">{{ p3 | money }}</div><div style="font-size:11px; color:#0b0b0c; background:#c6ff3a; font-weight:800; padding:1px 7px; border-radius:999px; display:inline-block; margin-top:3px;">{{ 'product.badge_best_price' | t }}</div></div>
+          </button>
+        </div>
+
+        <!-- STOCK BAR -->
+        <div style="margin-bottom:18px;">
+          <div style="height:6px; background:#232328; border-radius:9px; overflow:hidden; margin-bottom:7px;"><div style="height:100%; width:18%; background:linear-gradient(90deg,#ff2e6e,#ff7aa6);"></div></div>
+          {% if product.available %}<div style="font-size:12px; color:#ff7aa6; font-weight:600;">{{ 'product.stock_low' | t }}</div>{% else %}<div style="font-size:12px; color:#ff7aa6; font-weight:600;">{{ 'product.stock_out' | t }}</div>{% endif %}
+        </div>
+
+        <!-- CTAs -->
+        <div style="display:flex; flex-direction:column; gap:11px; margin-bottom:18px;">
+          <button type="button" id="fsBuy" class="fs-pdp-key" {% unless product.available %}disabled{% endunless %} style="background:#c6ff3a; color:#0b0b0c; border:none; border-radius:14px; padding:18px; font-family:'Archivo',sans-serif; font-weight:900; font-size:18px; text-transform:uppercase; cursor:pointer;">{% if product.available %}{{ 'product.buy_now' | t }} · <span class="fs-pdp-keyprice">{{ product.price | money }}</span>{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+          <button type="submit" name="add" id="fsAdd" class="fs-pdp-key2" {% unless product.available %}disabled{% endunless %} style="background:transparent; color:#c6ff3a; border:2px solid #c6ff3a; border-radius:14px; padding:15px; font-family:'Archivo',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase; cursor:pointer; transition:background .15s;">{% if product.available %}{{ 'product.add_to_cart' | t }} 🛒{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+        </div>
+      </form>
+
+      <!-- TRUST GRID 2x2 -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:11px; padding:14px 0; border-top:1px solid #1d1d20; border-bottom:1px solid #1d1d20;">
+        <div style="display:flex; align-items:center; gap:9px; font-size:13px; color:#d6d6db;"><span style="font-size:18px;">⚡</span> {{ 'product.trust_delivery' | t }}</div>
+        <div style="display:flex; align-items:center; gap:9px; font-size:13px; color:#d6d6db;"><span style="font-size:18px;">↩️</span> {{ 'product.trust_returns' | t }}</div>
+        <div style="display:flex; align-items:center; gap:9px; font-size:13px; color:#d6d6db;"><span style="font-size:18px;">🔒</span> {{ 'product.trust_secure_payment' | t }}</div>
+        <div style="display:flex; align-items:center; gap:9px; font-size:13px; color:#d6d6db;"><span style="font-size:18px;">💬</span> {{ 'product.trust_support' | t }}</div>
+      </div>
+      <div style="font-size:12px; color:#7a7a82; margin-top:12px;">💳 Visa · Mastercard · PayPal · Bizum · Apple Pay</div>
+
+      <!-- DESCRIPTION -->
+      {% if product.description != blank %}
+        <div style="margin-top:24px; border-top:1px solid #1d1d20; padding-top:22px;">
+          <h2 class="fs-h" style="font-size:18px; letter-spacing:-.01em; margin:0 0 12px;">{{ 'product.description_heading' | t }}</h2>
+          <div style="font-size:clamp(15px,2vw,16px); line-height:1.6; color:#b8b8bf;">{{ product.description }}</div>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <!-- WHY VIRAL -->
+  <section class="fs-w" style="padding-top:clamp(30px,4vw,52px); padding-bottom:clamp(20px,3vw,32px);">
+    <h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 22px;">{{ 'product.why_viral_heading_html' | t }}</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+      {% assign feat_icons = '🌀,🔋,🚗,🤫' | split: ',' %}
+      {% assign feat_titles = 'product.feat_1_title,product.feat_2_title,product.feat_3_title,product.feat_4_title' | split: ',' %}
+      {% assign feat_descs = 'product.feat_1_desc,product.feat_2_desc,product.feat_3_desc,product.feat_4_desc' | split: ',' %}
+      {% for icon in feat_icons %}
+        <div style="background:#121214; border:1px solid #232328; border-radius:16px; padding:20px;">
+          <div style="font-size:30px; margin-bottom:12px;">{{ icon }}</div>
+          <div class="fs-h" style="font-size:16px; letter-spacing:-.01em; margin-bottom:7px;">{{ feat_titles[forloop.index0] | t }}</div>
+          <div style="font-size:13px; color:#a1a1aa; line-height:1.5;">{{ feat_descs[forloop.index0] | t }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- VISTO EN TIKTOK -->
+  <section style="background:#101012; border-top:1px solid #1d1d20; border-bottom:1px solid #1d1d20; position:relative; z-index:1;">
+    <div style="max-width:1100px; margin:0 auto; padding:clamp(28px,4vw,46px) 0;">
+      <div style="display:flex; align-items:baseline; gap:14px; padding:0 clamp(16px,4vw,32px); margin-bottom:6px; flex-wrap:wrap;"><h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0;">{{ 'product.seen_on_tiktok_heading_html' | t }}</h2></div>
+      <p style="padding:0 clamp(16px,4vw,32px); margin:0 0 18px; font-size:14px; color:#8a8a91;">{{ 'product.tiktok_views' | t }}</p>
+      <div class="fs-scroll" style="gap:14px; padding:4px clamp(16px,4vw,32px) 14px;">
+        {% assign clips = '@techdani|1,5M,@hogarconana|820k,@cleantok_es|2,1M,@gadgetguy|640k,@minimal.home|390k' | split: ',' %}
+        {% for cl in clips %}{% assign p = cl | split: '|' %}
+        <div style="flex:0 0 auto; width:172px; scroll-snap-align:start; border-radius:16px; overflow:hidden; position:relative; aspect-ratio:9/16; background:repeating-linear-gradient(135deg,#1a1a1d 0 12px,#151517 12px 24px); cursor:pointer;">
+          <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><div style="width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.16); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">▶</div></div>
+          <div style="position:absolute; left:0; right:0; bottom:0; padding:12px 11px; background:linear-gradient(transparent,rgba(0,0,0,.85));">
+            <div style="font-weight:700; font-size:13px; margin-bottom:3px;">{{ p[0] }}</div>
+            <div style="font-size:11px; color:#c8c8cf;">❤️ {{ p[1] }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="fs-w" style="padding-top:clamp(30px,4vw,52px); padding-bottom:clamp(20px,3vw,32px);">
+    <h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 24px;">{{ 'product.reviews_heading' | t }}</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(20px,4vw,40px); align-items:center; margin-bottom:28px;">
+      <div style="text-align:center;">
+        <div class="fs-h" style="font-size:64px; color:#c6ff3a; line-height:1;">4,9</div>
+        <div style="color:#c6ff3a; letter-spacing:.1em; font-size:18px; margin:6px 0;">★★★★★</div>
+        <div style="font-size:13px; color:#8a8a91;">{{ 'product.reviews_count_label' | t }}</div>
+        <div style="font-size:13px; color:#d6d6db; margin-top:6px;">{{ 'product.reviews_recommend' | t }}</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        {% assign bars = '5★|86,4★|9,3★|3,2★|1,1★|1' | split: ',' %}
+        {% for b in bars %}{% assign p = b | split: '|' %}
+        <div style="display:flex; align-items:center; gap:10px; font-size:12px; color:#a1a1aa;">
+          <span style="width:24px; flex:none;">{{ p[0] }}</span>
+          <span style="flex:1; height:7px; background:#232328; border-radius:9px; overflow:hidden;"><span style="display:block; height:100%; width:{{ p[1] }}%; background:#c6ff3a;"></span></span>
+          <span style="width:34px; flex:none; text-align:right; font-variant-numeric:tabular-nums;">{{ p[1] }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;">
+      {% assign rev_names = 'María G.,Jorge R.,Lucía P.' | split: ',' %}
+      {% assign rev_colors = '#c6ff3a,#25f4ee,#ff2e6e' | split: ',' %}
+      {% assign rev_dates = 'product.review_1_date,product.review_2_date,product.review_3_date' | split: ',' %}
+      {% assign rev_stars = '★★★★★,★★★★★,★★★★☆' | split: ',' %}
+      {% assign rev_bodies = 'product.review_1_body,product.review_2_body,product.review_3_body' | split: ',' %}
+      {% for name in rev_names %}{% assign initial = name | slice: 0 %}
+        <div style="background:#121214; border:1px solid #232328; border-radius:16px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:11px; margin-bottom:10px;">
+            <span class="fs-h" style="width:38px; height:38px; flex:none; border-radius:50%; background:{{ rev_colors[forloop.index0] }}; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:16px;">{{ initial }}</span>
+            <div style="flex:1; min-width:0;">
+              <div style="font-weight:700; font-size:14px; color:#f5f5f4;">{{ name }} <span style="color:#c6ff3a; font-size:11px; font-weight:600;">{{ 'product.verified_purchase' | t }}</span></div>
+              <div style="font-size:12px; color:#8a8a91;">{{ rev_dates[forloop.index0] | t }}</div>
+            </div>
+          </div>
+          <div style="color:#d4ee5a; letter-spacing:.08em; font-size:14px; margin-bottom:9px;">{{ rev_stars[forloop.index0] }}</div>
+          <div style="font-size:13px; color:#b8b8bf; line-height:1.55; margin-bottom:12px;">{{ rev_bodies[forloop.index0] | t }}</div>
+          <div style="display:flex; gap:8px;"><span style="width:54px; height:54px; border-radius:9px; background:repeating-linear-gradient(45deg,#1a1a1d 0 8px,#151517 8px 16px); border:1px solid #232328;"></span><span style="width:54px; height:54px; border-radius:9px; background:repeating-linear-gradient(45deg,#1a1a1d 0 8px,#151517 8px 16px); border:1px solid #232328;"></span></div>
+        </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center; margin-top:22px;">
+      <a href="#reviews" style="display:inline-block; border:1px solid #26262b; background:#151517; border-radius:12px; padding:13px 24px; font-family:'Archivo',sans-serif; font-weight:800; font-size:14px; color:#f5f5f4;">{{ 'product.view_all_reviews' | t }} →</a>
+    </div>
+  </section>
+
+  <!-- FAQ / SHIPPING -->
+  <section class="fs-w" style="padding-top:clamp(20px,3vw,32px); padding-bottom:clamp(24px,4vw,40px);">
+    <h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 22px;">{{ 'product.faq_heading' | t }}</h2>
+    <div style="display:flex; flex-direction:column; gap:11px;">
+      {% assign faq_qs = 'product.faq_1_q,product.faq_2_q,product.faq_3_q,product.faq_4_q' | split: ',' %}
+      {% assign faq_as = 'product.faq_1_a,product.faq_2_a,product.faq_3_a,product.faq_4_a' | split: ',' %}
+      {% for q in faq_qs %}
+        <div class="fs-faq" style="background:#121214; border:1px solid #232328; border-radius:14px; overflow:hidden;">
+          <button type="button" class="fs-faq-q" aria-expanded="false">{{ q | t }}<span class="fs-faq-plus">+</span></button>
+          <div class="fs-faq-a"><div style="padding:0 18px 16px; font-size:14px; color:#a1a1aa; line-height:1.55;">{{ faq_as[forloop.index0] | t }}</div></div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- RELATED -->
+  {% if rel.products.size > 0 %}
+  <section style="position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:clamp(16px,3vw,28px) 0 clamp(26px,4vw,44px);">
+    <div style="display:flex; align-items:center; gap:14px; padding:0 clamp(16px,4vw,32px); margin-bottom:18px; flex-wrap:wrap;">
+      <h2 class="fs-h" style="font-size:clamp(22px,4vw,34px); margin:0;">🔥 {{ 'product.also_trending' | t }}</h2>
+      <a href="{{ rel.url | default: routes.all_products_collection_url }}" style="margin-left:auto; font-size:14px; color:#c6ff3a; font-weight:600;">{{ 'product.view_all' | t }} →</a>
+    </div>
+    <div class="fs-scroll" style="gap:16px; padding:4px clamp(16px,4vw,32px) 14px;">
+      {% for p in rel.products limit: 10 %}
+        {% unless p.id == product.id %}
+        {% assign pct = forloop.index | times: 13 | modulo: 60 | plus: 8 %}
+        <div class="fs-pcard" style="flex:0 0 auto; width:210px; scroll-snap-align:start; background:#141416; border:1px solid #232328; border-radius:18px; overflow:hidden; display:flex; flex-direction:column;">
+          <a href="{{ p.url }}" style="position:relative; aspect-ratio:1/1; background:repeating-linear-gradient(45deg,#1a1a1d 0 12px,#151517 12px 24px); display:block;">{% if p.featured_image %}<img src="{{ p.featured_image | image_url: width: 460 }}" alt="{{ p.title | escape }}" width="460" height="460" loading="lazy" style="width:100%; height:100%; object-fit:cover;">{% endif %}{% if p.compare_at_price > p.price %}<span class="fs-h" style="position:absolute; top:11px; left:11px; background:#c6ff3a; color:#0b0b0c; font-size:11px; padding:5px 9px; border-radius:7px; transform:rotate(-4deg);">{{ 'product.badge_sale' | t }}</span>{% endif %}</a>
+          <div style="padding:13px 14px 15px; display:flex; flex-direction:column; flex:1;">
+            <div style="font-size:13px; color:#d6d6db; margin-bottom:6px;">⭐ 4,{{ forloop.index | modulo: 4 | plus: 5 }} · <span style="color:#8a8a91;">{% assign rc = forloop.index | times: 213 | plus: 312 %}{{ 'product.card_reviews' | t: count: rc }}</span></div>
+            <a href="{{ p.url }}" style="font-weight:600; font-size:15px; line-height:1.25; margin-bottom:10px; min-height:38px;">{{ p.title | truncatewords: 8 }}</a>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:8px;"><span class="fs-h" style="font-size:21px; color:#c6ff3a;">{{ p.price | money }}</span>{% if p.compare_at_price > p.price %}<span style="font-size:13px; color:#6b6b73; text-decoration:line-through;">{{ p.compare_at_price | money }}</span>{% endif %}</div>
+            <div style="height:5px; background:#232328; border-radius:9px; overflow:hidden; margin-bottom:6px;"><div style="height:100%; width:{{ pct }}%; background:linear-gradient(90deg,#ff2e6e,#ff7aa6);"></div></div>
+            <div style="font-size:11px; color:#ff7aa6; font-weight:600; margin-bottom:12px;">🔥 {% assign uleft = forloop.index | times: 3 | plus: 3 %}{{ 'product.card_units_left' | t: count: uleft }}</div>
+            <a href="{{ p.url }}" class="fs-add" style="margin-top:auto; text-align:center; background:#c6ff3a; color:#0b0b0c; border-radius:11px; padding:11px; font-family:'Archivo',sans-serif; font-weight:800; font-size:14px;">{{ 'product.view_product' | t }} 🛒</a>
+          </div>
+        </div>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid #1d1d20; position:relative; z-index:1; padding-bottom:84px; text-align:center;">
+    <div class="fs-w" style="padding-top:clamp(28px,4vw,40px); padding-bottom:clamp(28px,4vw,40px);">
+      <div class="fs-h" style="font-size:24px; margin-bottom:8px;"><span style="color:#c6ff3a;">F</span>store<span style="color:#ff2e6e;">.</span></div>
+      <p style="font-size:13px; color:#56565d; margin:0;">© {{ 'now' | date: '%Y' }} {{ shop.name }} · {{ 'product.footer_tagline' | t }}</p>
+    </div>
+  </footer>
+
+  <!-- STICKY MOBILE BUY BAR -->
+  <div class="fs-pdp-bar" style="position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(11,11,12,.94); backdrop-filter:blur(14px); border-top:1px solid #232328; padding:10px clamp(12px,4vw,20px); display:flex; align-items:center; gap:12px;">
+    <div style="min-width:0; flex:none;">
+      <div style="display:flex; align-items:baseline; gap:7px; line-height:1;">
+        {% if has_disc %}<span class="fs-pdp-barcompare" style="font-size:12px; color:#6b6b73; text-decoration:line-through;">{{ product.compare_at_price | money }}</span>{% endif %}
+      </div>
+      <span class="fs-h fs-pdp-barprice" style="font-size:20px; color:#c6ff3a; line-height:1;">{{ product.price | money }}</span>
+    </div>
+    <button type="button" id="fsBuyBar" class="fs-pdp-key" {% unless product.available %}disabled{% endunless %} style="flex:1; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:12px; padding:14px; font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; text-transform:uppercase; cursor:pointer;">{% if product.available %}{{ 'product.add_short' | t }} 🛒{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+  </div>
+  <style>@media(min-width:880px){ .fs-pdp-bar{ display:none !important; } footer{ padding-bottom:0 !important; } }</style>
+</div>
+
+<script type="application/json" id="fsProductJson">{{ product.variants | json }}</script>
+<script>
+(function(){
+  var FS_T = {
+    unavailable: {{ 'product.unavailable' | t | json }},
+    buyNow: {{ 'product.buy_now' | t | json }},
+    addToCart: {{ 'product.add_to_cart' | t | json }},
+    addShort: {{ 'product.add_short' | t | json }},
+    soldOut: {{ 'product.sold_out' | t | json }},
+    youSave: {{ 'product.you_save' | t | json }}
+  };
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Countdown (single HH:MM:SS field)
+  var end = Date.now() + ((4*3600)+(37*60)+12)*1000;
+  function pad(n){ return (n<10?'0':'')+n; }
+  function tick(){
+    var d = end - Date.now(); if (d<=0){ end = Date.now()+5*3600*1000; d = end-Date.now(); }
+    var cd=document.getElementById('fsCd');
+    if(cd){ cd.textContent = pad(Math.floor(d/3.6e6))+':'+pad(Math.floor(d%3.6e6/6e4))+':'+pad(Math.floor(d%6e4/1e3)); }
+  }
+  tick(); if(!reduce){ setInterval(tick,1000); }
+
+  // Live viewers
+  var vw=document.getElementById('fsViewers');
+  if(vw && !reduce) setInterval(function(){ vw.textContent=(940+Math.floor(Math.random()*1040)).toLocaleString('es-ES'); },1800);
+
+  // Gallery swap
+  var mains=document.querySelectorAll('.fs-pdp-main'), thumbs=document.querySelectorAll('.fs-pdp-thumb');
+  thumbs.forEach(function(t){ t.addEventListener('click', function(){
+    var i=t.getAttribute('data-idx');
+    mains.forEach(function(m){ m.style.opacity = (m.getAttribute('data-idx')===i)?'1':'0'; });
+    thumbs.forEach(function(x){ var on=(x===t); x.classList.toggle('is-active', on); x.style.borderColor = on ? '#c6ff3a' : '#26262b'; });
+  }); });
+
+  // Currency formatter
+  function money(c){ try{ return (c/100).toLocaleString('es-ES',{style:'currency',currency:'{{ shop.currency }}'}); }catch(e){ return (c/100).toFixed(2); } }
+
+  // Refs
+  var variants=[]; try{ variants=JSON.parse(document.getElementById('fsProductJson').textContent); }catch(e){}
+  var idInput=document.getElementById('fsVariantId');
+  var qtyInput=document.getElementById('fsQty');
+  var buy=document.getElementById('fsBuy'), add=document.getElementById('fsAdd'), buyBar=document.getElementById('fsBuyBar');
+  var priceEl=document.querySelector('.fs-pdp-price'), compareEl=document.querySelector('.fs-pdp-compare'), discEl=document.querySelector('.fs-pdp-disc');
+  var savesEl=document.querySelector('.fs-pdp-saves'), keyPriceEl=document.querySelector('.fs-pdp-keyprice');
+  var barPriceEl=document.querySelector('.fs-pdp-barprice'), barCompareEl=document.querySelector('.fs-pdp-barcompare');
+  var unitPrice = variants.length ? variants[0].price : 0;
+  var qty = 1;
+
+  // Pack selector -> quantity (honest price = unit * qty)
+  var packs=document.querySelectorAll('.fs-pack');
+  packs.forEach(function(pk){ pk.addEventListener('click', function(){
+    packs.forEach(function(x){ var on=(x===pk); x.classList.toggle('is-active', on); x.setAttribute('aria-pressed', on?'true':'false'); });
+    qty = parseInt(pk.getAttribute('data-qty'),10) || 1;
+    if(qtyInput) qtyInput.value = qty;
+    refresh();
+  }); });
+
+  function currentVariant(){
+    var groups=document.querySelectorAll('.fs-opt-group');
+    if(!groups.length || !variants.length) return variants[0];
+    var chosen=[];
+    groups.forEach(function(g){
+      var sel=g.querySelector('.fs-opt-radio:checked');
+      var lbl=g.querySelector('.fs-opt-selected');
+      if(sel){ chosen.push(sel.value); if(lbl) lbl.textContent=sel.value; }
+    });
+    return variants.find(function(va){ return (va.options||[]).every(function(o,i){ return o===chosen[i]; }); });
+  }
+
+  function refresh(){
+    var v=currentVariant();
+    if(!v){
+      if(buy){ buy.disabled=true; buy.textContent=FS_T.unavailable; }
+      if(add){ add.disabled=true; add.textContent=FS_T.unavailable; }
+      if(buyBar){ buyBar.disabled=true; buyBar.textContent=FS_T.unavailable; }
+      return;
+    }
+    if(idInput) idInput.value=v.id;
+    unitPrice = v.price;
+    var total = v.price * qty;
+    if(priceEl) priceEl.textContent=money(v.price);
+    if(barPriceEl) barPriceEl.textContent=money(v.price);
+    if(keyPriceEl) keyPriceEl.textContent=money(total);
+    var hasC = v.compare_at_price && v.compare_at_price>v.price;
+    if(compareEl) compareEl.style.display = hasC ? '' : 'none';
+    if(compareEl && hasC) compareEl.textContent=money(v.compare_at_price);
+    if(barCompareEl) barCompareEl.style.display = hasC ? '' : 'none';
+    if(barCompareEl && hasC) barCompareEl.textContent=money(v.compare_at_price);
+    if(discEl){ if(hasC){ discEl.style.display=''; discEl.textContent='-'+Math.round((v.compare_at_price-v.price)*100/v.compare_at_price)+'%'; } else { discEl.style.display='none'; } }
+    if(savesEl){ if(hasC){ savesEl.style.display=''; savesEl.textContent='💸 '+FS_T.youSave+' '+money(v.compare_at_price-v.price); } else { savesEl.style.display='none'; } }
+    if(v.available){
+      if(buy){ buy.disabled=false; buy.innerHTML=FS_T.buyNow+' · <span class="fs-pdp-keyprice">'+money(total)+'</span>'; keyPriceEl=document.querySelector('.fs-pdp-keyprice'); }
+      if(add){ add.disabled=false; add.textContent=FS_T.addToCart+' 🛒'; }
+      if(buyBar){ buyBar.disabled=false; buyBar.textContent=FS_T.addShort+' 🛒'; }
+    } else {
+      if(buy){ buy.disabled=true; buy.textContent=FS_T.soldOut; }
+      if(add){ add.disabled=true; add.textContent=FS_T.soldOut; }
+      if(buyBar){ buyBar.disabled=true; buyBar.textContent=FS_T.soldOut; }
+    }
+  }
+  document.querySelectorAll('.fs-opt-radio').forEach(function(r){ r.addEventListener('change', refresh); });
+  refresh();
+
+  // Sticky bar submits the real form (add to cart)
+  if(buyBar) buyBar.addEventListener('click', function(){ var f=document.getElementById('fsForm'); if(f && !buyBar.disabled) f.submit(); });
+
+  // Buy now: add the item, then go straight to Shopify's secure checkout
+  // (return_to makes /cart/add redirect to /checkout, where the configured processors — e.g. MercadoPago — appear).
+  if(buy) buy.addEventListener('click', function(){
+    var f=document.getElementById('fsForm'); if(!f || buy.disabled) return;
+    if(!f.querySelector('input[name="return_to"]')){ var rt=document.createElement('input'); rt.type='hidden'; rt.name='return_to'; rt.value='/checkout'; f.appendChild(rt); }
+    f.submit();
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.fs-faq-q').forEach(function(q){ q.addEventListener('click', function(){
+    var item=q.closest('.fs-faq'); var open=item.classList.toggle('is-open');
+    q.setAttribute('aria-expanded', open?'true':'false');
+  }); });
+})();
+</script>

@@ -28,7 +28,7 @@
   <!-- MARQUEE -->
   <div style="background:#c6ff3a; color:#0b0b0c; overflow:hidden; white-space:nowrap; position:relative; z-index:2; border-bottom:2px solid #0b0b0c;">
     <div style="display:inline-flex; gap:28px; padding:9px 0; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase; animation:fs-marquee 22s linear infinite;">
-      {% for i in (1..2) %}<span>🚚 Envío gratis +30€</span><span>★</span><span>↩ Devolución 30 días</span><span>★</span><span>🔥 +12.000 pedidos enviados</span><span>★</span><span>⚡ Entrega 24–72h</span><span>★</span><span>💳 Pago 100% seguro</span><span>★</span>{% endfor %}
+      {% for i in (1..2) %}<span>{{ 'home.marquee_free_shipping' | t }}</span><span>★</span><span>{{ 'home.marquee_returns' | t }}</span><span>★</span><span>{{ 'home.marquee_orders' | t }}</span><span>★</span><span>{{ 'home.marquee_delivery' | t }}</span><span>★</span><span>{{ 'home.marquee_secure_pay' | t }}</span><span>★</span>{% endfor %}
     </div>
   </div>
 
@@ -37,11 +37,11 @@
     <div class="fs-w" style="display:flex; align-items:center; gap:18px; padding-top:12px; padding-bottom:12px;">
       <a href="{{ routes.root_url }}" class="fs-h" style="font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
       <form action="{{ routes.search_url }}" method="get" style="flex:1; max-width:440px; display:none; align-items:center; gap:8px; background:#151517; border:1px solid #26262b; border-radius:999px; padding:9px 16px;" class="fs-search">
-        <span style="opacity:.5;">🔎</span><input name="q" placeholder="Busca lo que viste en TikTok…" style="flex:1; background:none; border:none; outline:none; color:#f5f5f4; font-size:14px; font-family:'Space Grotesk',sans-serif;">
+        <span style="opacity:.5;">🔎</span><input name="q" placeholder="{{ 'home.search_placeholder' | t }}" style="flex:1; background:none; border:none; outline:none; color:#f5f5f4; font-size:14px; font-family:'Space Grotesk',sans-serif;">
       </form>
       <nav class="fs-nav" style="display:flex; gap:20px; margin-left:auto; font-size:14px; font-weight:500;">
-        <a href="#trending" style="color:#cfcfd4;" class="fs-deskonly">Trending</a>
-        <a href="#tiktok" style="color:#cfcfd4;" class="fs-deskonly">Visto en TikTok</a>
+        <a href="#trending" style="color:#cfcfd4;" class="fs-deskonly">{{ 'home.nav_trending' | t }}</a>
+        <a href="#tiktok" style="color:#cfcfd4;" class="fs-deskonly">{{ 'home.nav_seen_on_tiktok' | t }}</a>
         <a href="{{ routes.cart_url }}" style="display:flex; align-items:center; gap:8px; background:#c6ff3a; color:#0b0b0c; border-radius:999px; padding:10px 16px; font-family:'Archivo',sans-serif; font-weight:800;">🛒 <span style="font-variant-numeric:tabular-nums;">{{ cart.item_count }}</span></a>
       </nav>
     </div>
@@ -51,18 +51,18 @@
   <!-- HERO -->
   <section class="fs-w" style="display:flex; flex-wrap:wrap; gap:clamp(28px,5vw,64px); align-items:center; padding-top:clamp(24px,4vw,52px); padding-bottom:clamp(28px,4vw,48px);">
     <div style="flex:1 1 380px; min-width:0;">
-      <div style="display:inline-flex; align-items:center; gap:8px; background:#ff2e6e; color:#fff; font-family:'Archivo',sans-serif; font-weight:800; font-size:12px; letter-spacing:.06em; text-transform:uppercase; padding:7px 13px; border-radius:999px; margin-bottom:18px;"><span style="width:8px;height:8px;border-radius:50%;background:#fff;animation:fs-pulse 1.2s infinite;"></span> Producto viral del momento</div>
-      <h1 class="fs-h" style="font-size:clamp(38px,7vw,72px); line-height:.92; letter-spacing:-.035em; margin:0 0 18px;">{{ hero.title | default: 'Lo más viral de TikTok' }}</h1>
-      <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.5; max-width:460px; margin:0 0 22px;">{{ hero.description | strip_html | truncatewords: 26 | default: 'Lo que ves en todos los For You — en stock y enviado rápido. Se está agotando otra vez.' }}</p>
+      <div style="display:inline-flex; align-items:center; gap:8px; background:#ff2e6e; color:#fff; font-family:'Archivo',sans-serif; font-weight:800; font-size:12px; letter-spacing:.06em; text-transform:uppercase; padding:7px 13px; border-radius:999px; margin-bottom:18px;"><span style="width:8px;height:8px;border-radius:50%;background:#fff;animation:fs-pulse 1.2s infinite;"></span> {{ 'home.hero_badge' | t }}</div>
+      <h1 class="fs-h" style="font-size:clamp(38px,7vw,72px); line-height:.92; letter-spacing:-.035em; margin:0 0 18px;">{% if hero.title != blank %}{{ hero.title }}{% else %}{{ 'home.hero_title_fallback' | t }}{% endif %}</h1>
+      <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.5; max-width:460px; margin:0 0 22px;">{% assign hero_desc = hero.description | strip_html | truncatewords: 26 %}{% if hero_desc != blank %}{{ hero_desc }}{% else %}{{ 'home.hero_desc_fallback' | t }}{% endif %}</p>
       {% if hero %}
       <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px;">
         <div style="display:flex; align-items:baseline; gap:10px;"><span class="fs-h" style="font-size:clamp(34px,5vw,46px); color:#c6ff3a; line-height:1;">{{ hero.price | money }}</span>{% if hero.compare_at_price > hero.price %}<span style="font-size:18px; color:#6b6b73; text-decoration:line-through;">{{ hero.compare_at_price | money }}</span>{% endif %}</div>
-        {% if hero.compare_at_price > hero.price %}<span style="background:#c6ff3a; color:#0b0b0c; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; padding:5px 10px; border-radius:6px; transform:rotate(-3deg);">OFERTA</span>{% endif %}
-        <span style="font-size:14px; color:#d6d6db;">⭐ 4,9 · <span style="color:#9a9aa1;">3.412 reseñas</span></span>
+        {% if hero.compare_at_price > hero.price %}<span style="background:#c6ff3a; color:#0b0b0c; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; padding:5px 10px; border-radius:6px; transform:rotate(-3deg);">{{ 'home.deal_badge' | t }}</span>{% endif %}
+        <span style="font-size:14px; color:#d6d6db;">⭐ 4,9 · <span style="color:#9a9aa1;">{{ 'home.hero_reviews' | t }}</span></span>
       </div>
       {% endif %}
       <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px;">
-        <span class="fs-h" style="font-size:12px; letter-spacing:.05em; color:#ff2e6e;">⏳ Oferta acaba en</span>
+        <span class="fs-h" style="font-size:12px; letter-spacing:.05em; color:#ff2e6e;">{{ 'home.offer_ends_in' | t }}</span>
         <div style="display:flex; gap:7px; font-family:'Archivo',sans-serif; font-weight:900; font-variant-numeric:tabular-nums;">
           <span id="fsHH" style="background:#151517; border:1px solid #26262b; border-radius:9px; padding:8px 11px; font-size:22px; min-width:46px; text-align:center;">04</span><span style="align-self:center; color:#ff2e6e;">:</span>
           <span id="fsMM" style="background:#151517; border:1px solid #26262b; border-radius:9px; padding:8px 11px; font-size:22px; min-width:46px; text-align:center;">37</span><span style="align-self:center; color:#ff2e6e;">:</span>
@@ -70,17 +70,17 @@
         </div>
       </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-        <button class="fs-add" data-id="{{ hero.variants.first.id }}" style="flex:1 1 220px; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:14px; padding:17px 26px; font-family:'Archivo',sans-serif; font-weight:900; font-size:18px; text-transform:uppercase; cursor:pointer; box-shadow:0 8px 0 #7fae00;">Comprar ahora 🛒</button>
-        <div style="display:flex; align-items:center; gap:8px; background:#151517; border:1px solid #26262b; border-radius:12px; padding:11px 15px; font-size:13px; color:#d6d6db; white-space:nowrap;"><span style="width:9px;height:9px;border-radius:50%;background:#25f4ee;animation:fs-pulse 1.4s infinite;"></span> 👀 <strong id="fsViewers" style="color:#fff; font-variant-numeric:tabular-nums;">1.284</strong> viéndolo ahora</div>
+        <button class="fs-add" data-id="{{ hero.variants.first.id }}" style="flex:1 1 220px; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:14px; padding:17px 26px; font-family:'Archivo',sans-serif; font-weight:900; font-size:18px; text-transform:uppercase; cursor:pointer; box-shadow:0 8px 0 #7fae00;">{{ 'home.buy_now' | t }} 🛒</button>
+        <div style="display:flex; align-items:center; gap:8px; background:#151517; border:1px solid #26262b; border-radius:12px; padding:11px 15px; font-size:13px; color:#d6d6db; white-space:nowrap;"><span style="width:9px;height:9px;border-radius:50%;background:#25f4ee;animation:fs-pulse 1.4s infinite;"></span> 👀 <strong id="fsViewers" style="color:#fff; font-variant-numeric:tabular-nums;">1.284</strong> {{ 'home.viewing_now' | t }}</div>
       </div>
-      <p style="font-size:13px; color:#ff7aa6; margin:16px 0 0; font-weight:600;">🔥 ¡Solo quedan 7 unidades a este precio!</p>
+      <p style="font-size:13px; color:#ff7aa6; margin:16px 0 0; font-weight:600;">{{ 'home.units_left_at_price' | t }}</p>
     </div>
     <div style="flex:1 1 340px; min-width:0; position:relative;">
       <div style="position:relative; aspect-ratio:1/1; border-radius:26px; overflow:hidden; border:1px solid #26262b; background:repeating-linear-gradient(45deg,#161618 0 14px,#121214 14px 28px); display:flex; align-items:center; justify-content:center;">
-        {% if hero.featured_image %}<img src="{{ hero.featured_image | image_url: width: 900 }}" alt="{{ hero.title | escape }}" width="900" height="900" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">{% else %}<span style="font-family:monospace; font-size:12px; letter-spacing:.1em; color:#56565d; text-transform:uppercase;">[ foto producto · 1:1 ]</span>{% endif %}
+        {% if hero.featured_image %}<img src="{{ hero.featured_image | image_url: width: 900 }}" alt="{{ hero.title | escape }}" width="900" height="900" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;">{% else %}<span style="font-family:monospace; font-size:12px; letter-spacing:.1em; color:#56565d; text-transform:uppercase;">{{ 'home.product_photo_placeholder' | t }}</span>{% endif %}
       </div>
-      <div class="fs-h" style="position:absolute; top:-18px; left:-12px; background:#ff2e6e; color:#fff; font-size:15px; padding:11px 15px; border-radius:14px; transform:rotate(-9deg); box-shadow:0 8px 20px rgba(255,46,110,.4); --r:-9deg; animation:fs-float 4s infinite;">🔥 #1 en TikTok</div>
-      <div class="fs-h" style="position:absolute; bottom:18px; right:-14px; background:#c6ff3a; color:#0b0b0c; font-size:13px; padding:9px 13px; border-radius:999px; transform:rotate(6deg); box-shadow:0 8px 20px rgba(198,255,58,.35); --r:6deg; animation:fs-float 5s infinite .6s;">✅ Envío 24h</div>
+      <div class="fs-h" style="position:absolute; top:-18px; left:-12px; background:#ff2e6e; color:#fff; font-size:15px; padding:11px 15px; border-radius:14px; transform:rotate(-9deg); box-shadow:0 8px 20px rgba(255,46,110,.4); --r:-9deg; animation:fs-float 4s infinite;">{{ 'home.badge_number_one' | t }}</div>
+      <div class="fs-h" style="position:absolute; bottom:18px; right:-14px; background:#c6ff3a; color:#0b0b0c; font-size:13px; padding:9px 13px; border-radius:999px; transform:rotate(6deg); box-shadow:0 8px 20px rgba(198,255,58,.35); --r:6deg; animation:fs-float 5s infinite .6s;">{{ 'home.badge_shipping_24h' | t }}</div>
       <div class="fs-h" style="position:absolute; top:34%; right:-22px; width:62px; height:62px; background:#25f4ee; color:#0b0b0c; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1; transform:rotate(-8deg);"><span style="font-size:18px;">-50</span><span style="font-size:11px;">%</span></div>
     </div>
   </section>
@@ -88,61 +88,61 @@
   <!-- TRUST STRIP -->
   <section style="border-top:1px solid #1d1d20; border-bottom:1px solid #1d1d20; background:#101012; position:relative; z-index:1;">
     <div class="fs-w" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; padding-top:16px; padding-bottom:16px;">
-      {% assign tr = '⚡|Entrega 24–72h|Stock en España,↩️|Devolución 30 días|Sin preguntas,🔒|Pago 100% seguro|Visa · PayPal · Bizum,💬|Soporte WhatsApp|Respondemos en min.' | split: ',' %}
-      {% for t in tr %}{% assign p = t | split: '|' %}<div style="display:flex; align-items:center; gap:11px; padding:6px;"><span style="font-size:22px;">{{ p[0] }}</span><div><div style="font-weight:700; font-size:14px;">{{ p[1] }}</div><div style="font-size:12px; color:#8a8a91;">{{ p[2] }}</div></div></div>{% endfor %}
+      {% assign tr = '⚡|home.trust_delivery_title|home.trust_delivery_sub,↩️|home.trust_returns_title|home.trust_returns_sub,🔒|home.trust_secure_title|home.trust_secure_sub,💬|home.trust_support_title|home.trust_support_sub' | split: ',' %}
+      {% for t in tr %}{% assign p = t | split: '|' %}<div style="display:flex; align-items:center; gap:11px; padding:6px;"><span style="font-size:22px;">{{ p[0] }}</span><div><div style="font-weight:700; font-size:14px;">{{ p[1] | t }}</div><div style="font-size:12px; color:#8a8a91;">{{ p[2] | t }}</div></div></div>{% endfor %}
     </div>
   </section>
 
   <!-- CATEGORIES -->
   <section class="fs-w" style="padding-top:clamp(28px,4vw,44px); padding-bottom:8px;">
-    <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:16px; flex-wrap:wrap;"><h2 class="fs-h" style="font-size:clamp(22px,3.5vw,32px); margin:0;">Explora por categoría</h2><span style="font-size:14px; color:#8a8a91;">cientos de novedades cada semana</span></div>
+    <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:16px; flex-wrap:wrap;"><h2 class="fs-h" style="font-size:clamp(22px,3.5vw,32px); margin:0;">{{ 'home.categories_title' | t }}</h2><span style="font-size:14px; color:#8a8a91;">{{ 'home.categories_subtitle' | t }}</span></div>
     <div style="display:flex; flex-wrap:wrap; gap:11px;">
-      {% assign cats = '🔌 Gadgets,🏠 Hogar,💄 Belleza,👜 Accesorios,📱 Tech,🐶 Mascotas,🏋️ Fitness,✨ Novedades' | split: ',' %}
-      {% for c in cats %}<a href="{{ routes.all_products_collection_url }}" class="fs-chip" style="display:flex; align-items:center; gap:9px; background:#151517; border:1px solid #26262b; border-radius:999px; padding:10px 17px; font-weight:600; font-size:15px;">{{ c }}</a>{% endfor %}
+      {% assign cats = '🔌 home.cat_gadgets gadgets,🏠 home.cat_home home,💄 home.cat_beauty beauty,👜 home.cat_accessories accessories,📱 home.cat_tech tech,🐶 home.cat_pets pets,🏋️ home.cat_fitness fitness,✨ home.cat_new new' | split: ',' %}
+      {% for c in cats %}{% assign cparts = c | split: ' ' %}{% assign ccol = collections[cparts[2]] %}<a href="{% if ccol != blank %}{{ ccol.url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" class="fs-chip" style="display:flex; align-items:center; gap:9px; background:#151517; border:1px solid #26262b; border-radius:999px; padding:10px 17px; font-weight:600; font-size:15px;">{{ cparts[0] }} {{ cparts[1] | t }}</a>{% endfor %}
     </div>
   </section>
 
   <!-- TRENDING (real products) -->
   <section id="trending" style="position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:clamp(26px,4vw,40px) 0 clamp(20px,4vw,32px);">
     <div style="display:flex; align-items:center; gap:14px; padding:0 clamp(16px,4vw,40px); margin-bottom:18px; flex-wrap:wrap;">
-      <h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0;">🔥 Trending ahora</h2>
-      <span class="fs-h" style="background:#ff2e6e; color:#fff; font-size:11px; letter-spacing:.05em; padding:5px 11px; border-radius:999px;">en vivo</span>
-      <a href="{{ coll.url | default: routes.all_products_collection_url }}" style="margin-left:auto; font-size:14px; color:#c6ff3a; font-weight:600;">Ver todo →</a>
+      <h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0;">{{ 'home.trending_title' | t }}</h2>
+      <span class="fs-h" style="background:#ff2e6e; color:#fff; font-size:11px; letter-spacing:.05em; padding:5px 11px; border-radius:999px;">{{ 'home.live' | t }}</span>
+      <a href="{{ coll.url | default: routes.all_products_collection_url }}" style="margin-left:auto; font-size:14px; color:#c6ff3a; font-weight:600;">{{ 'home.view_all' | t }} →</a>
     </div>
     {% if coll.products.size > 0 %}
     <div class="fs-scroll" style="gap:16px; padding:4px clamp(16px,4vw,40px) 14px;">
       {% for product in coll.products limit: 10 %}
       {% assign pct = forloop.index | times: 13 | modulo: 60 | plus: 8 %}
       <div class="fs-pcard" style="flex:0 0 auto; width:248px; scroll-snap-align:start; background:#141416; border:1px solid #232328; border-radius:18px; overflow:hidden; display:flex; flex-direction:column;">
-        <a href="{{ product.url }}" style="position:relative; aspect-ratio:1/1; background:repeating-linear-gradient(45deg,#1a1a1d 0 12px,#151517 12px 24px); display:block;">{% if product.featured_image %}<img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" width="500" height="500" style="width:100%; height:100%; object-fit:cover;">{% endif %}{% if product.compare_at_price > product.price %}<span class="fs-h" style="position:absolute; top:11px; left:11px; background:#c6ff3a; color:#0b0b0c; font-size:11px; padding:5px 9px; border-radius:7px; transform:rotate(-4deg);">Oferta</span>{% endif %}</a>
+        <a href="{{ product.url }}" style="position:relative; aspect-ratio:1/1; background:repeating-linear-gradient(45deg,#1a1a1d 0 12px,#151517 12px 24px); display:block;">{% if product.featured_image %}<img src="{{ product.featured_image | image_url: width: 500 }}" alt="{{ product.title | escape }}" width="500" height="500" style="width:100%; height:100%; object-fit:cover;">{% endif %}{% if product.compare_at_price > product.price %}<span class="fs-h" style="position:absolute; top:11px; left:11px; background:#c6ff3a; color:#0b0b0c; font-size:11px; padding:5px 9px; border-radius:7px; transform:rotate(-4deg);">{{ 'home.sale_badge' | t }}</span>{% endif %}</a>
         <div style="padding:13px 14px 15px; display:flex; flex-direction:column; flex:1;">
-          <div style="font-size:13px; color:#d6d6db; margin-bottom:6px;">⭐ 4,{{ forloop.index | modulo: 4 | plus: 5 }} · <span style="color:#8a8a91;">{{ forloop.index | times: 213 | plus: 312 }} reseñas</span></div>
+          <div style="font-size:13px; color:#d6d6db; margin-bottom:6px;">⭐ 4,{{ forloop.index | modulo: 4 | plus: 5 }} · <span style="color:#8a8a91;">{% assign review_count = forloop.index | times: 213 | plus: 312 %}{{ 'home.review_count' | t: count: review_count }}</span></div>
           <a href="{{ product.url }}" style="font-weight:600; font-size:15px; line-height:1.25; margin-bottom:10px; min-height:38px;">{{ product.title | truncatewords: 8 }}</a>
           <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:8px;"><span class="fs-h" style="font-size:21px; color:#c6ff3a;">{{ product.price | money }}</span>{% if product.compare_at_price > product.price %}<span style="font-size:13px; color:#6b6b73; text-decoration:line-through;">{{ product.compare_at_price | money }}</span>{% endif %}</div>
           <div style="height:5px; background:#232328; border-radius:9px; overflow:hidden; margin-bottom:6px;"><div style="height:100%; width:{{ pct }}%; background:linear-gradient(90deg,#ff2e6e,#ff7aa6);"></div></div>
-          <div style="font-size:11px; color:#ff7aa6; font-weight:600; margin-bottom:12px;">🔥 Quedan {{ forloop.index | times: 3 | plus: 3 }} uds</div>
-          <button class="fs-add" data-id="{{ product.variants.first.id }}" style="margin-top:auto; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:11px; padding:11px; font-family:'Archivo',sans-serif; font-weight:800; font-size:14px; cursor:pointer;">Añadir 🛒</button>
+          <div style="font-size:11px; color:#ff7aa6; font-weight:600; margin-bottom:12px;">{% assign units_left = forloop.index | times: 3 | plus: 3 %}{{ 'home.units_left' | t: count: units_left }}</div>
+          <button class="fs-add" data-id="{{ product.variants.first.id }}" style="margin-top:auto; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:11px; padding:11px; font-family:'Archivo',sans-serif; font-weight:800; font-size:14px; cursor:pointer;">{{ 'home.add_to_cart' | t }} 🛒</button>
         </div>
       </div>
       {% endfor %}
     </div>
-    {% else %}<p style="padding:0 clamp(16px,4vw,40px); color:#8a8a91;">Añade productos a la colección <b>“all”</b> en tu admin de Shopify para que aparezcan aquí 🔥</p>{% endif %}
+    {% else %}<p style="padding:0 clamp(16px,4vw,40px); color:#8a8a91;">{{ 'home.empty_collection_html' | t }}</p>{% endif %}
   </section>
 
   <!-- SEEN ON TIKTOK -->
   <section id="tiktok" style="background:#101012; border-top:1px solid #1d1d20; border-bottom:1px solid #1d1d20; position:relative; z-index:1;">
     <div style="max-width:1240px; margin:0 auto; padding:clamp(30px,4vw,48px) 0;">
-      <div style="display:flex; align-items:center; gap:14px; padding:0 clamp(16px,4vw,40px); margin-bottom:8px; flex-wrap:wrap;"><h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0;">Visto en <span style="color:#25f4ee;">TikTok</span></h2><span style="font-size:14px; color:#8a8a91;">clips reales de gente real</span></div>
-      <p style="padding:0 clamp(16px,4vw,40px); margin:0 0 18px; font-size:14px; color:#8a8a91;">+18M de visualizaciones acumuladas · toca para ver el vídeo</p>
+      <div style="display:flex; align-items:center; gap:14px; padding:0 clamp(16px,4vw,40px); margin-bottom:8px; flex-wrap:wrap;"><h2 class="fs-h" style="font-size:clamp(24px,4vw,38px); margin:0;">{{ 'home.tiktok_title_html' | t }}</h2><span style="font-size:14px; color:#8a8a91;">{{ 'home.tiktok_subtitle' | t }}</span></div>
+      <p style="padding:0 clamp(16px,4vw,40px); margin:0 0 18px; font-size:14px; color:#8a8a91;">{{ 'home.tiktok_views' | t }}</p>
       <div class="fs-scroll" style="gap:14px; padding:4px clamp(16px,4vw,40px) 14px;">
-        {% assign clips = '@lauravlogs|1,2M|8.4k|Botella LED,@gadgetguy|890k|5.1k|Proyector galaxia,@beautyfran|2,4M|19k|Organizador 360°,@hometips_es|670k|3.9k|Lámpara Sunset,@techdani|1,5M|11k|Mini aspiradora' | split: ',' %}
+        {% assign clips = '@lauravlogs|1,2M|8.4k|home.clip_led_bottle,@gadgetguy|890k|5.1k|home.clip_galaxy_projector,@beautyfran|2,4M|19k|home.clip_organizer_360,@hometips_es|670k|3.9k|home.clip_sunset_lamp,@techdani|1,5M|11k|home.clip_mini_vacuum' | split: ',' %}
         {% for cl in clips %}{% assign p = cl | split: '|' %}
         <div style="flex:0 0 auto; width:186px; scroll-snap-align:start; border-radius:16px; overflow:hidden; position:relative; aspect-ratio:9/16; background:repeating-linear-gradient(135deg,#1a1a1d 0 12px,#151517 12px 24px); cursor:pointer;">
           <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;"><div style="width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.16); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">▶</div></div>
           <div style="position:absolute; left:0; right:0; bottom:0; padding:12px 11px; background:linear-gradient(transparent,rgba(0,0,0,.85));">
             <div style="font-weight:700; font-size:13px; margin-bottom:3px;">{{ p[0] }}</div>
             <div style="font-size:11px; color:#c8c8cf; margin-bottom:8px;">❤️ {{ p[1] }} · 💬 {{ p[2] }}</div>
-            <div style="display:inline-flex; align-items:center; gap:6px; background:#c6ff3a; color:#0b0b0c; font-weight:700; font-size:11px; padding:5px 9px; border-radius:999px;">🛒 {{ p[3] }}</div>
+            <div style="display:inline-flex; align-items:center; gap:6px; background:#c6ff3a; color:#0b0b0c; font-weight:700; font-size:11px; padding:5px 9px; border-radius:999px;">🛒 {{ p[3] | t }}</div>
           </div>
         </div>
         {% endfor %}
@@ -153,28 +153,28 @@
   <!-- SOCIAL PROOF + CTA -->
   <section class="fs-w" style="padding-top:clamp(34px,5vw,56px); padding-bottom:clamp(34px,5vw,56px);">
     <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; text-align:center;">
-      {% assign stats = '+12.000|pedidos enviados|#c6ff3a,4,8★|valoración media|#ffffff,+50k|seguidores en TikTok|#25f4ee,24–72h|entrega en España|#ff2e6e' | split: ',' %}
-      {% for s in stats %}{% assign p = s | split: '|' %}<div style="background:#141416; border:1px solid #232328; border-radius:18px; padding:24px 14px;"><div class="fs-h" style="font-size:clamp(28px,4.5vw,40px); color:{{ p[2] }}; line-height:1;">{{ p[0] }}</div><div style="font-size:13px; color:#a1a1aa; margin-top:8px;">{{ p[1] }}</div></div>{% endfor %}
+      {% assign stats = '+12.000|home.stat_orders|#c6ff3a,4,8★|home.stat_rating|#ffffff,+50k|home.stat_followers|#25f4ee,24–72h|home.stat_delivery|#ff2e6e' | split: ',' %}
+      {% for s in stats %}{% assign p = s | split: '|' %}<div style="background:#141416; border:1px solid #232328; border-radius:18px; padding:24px 14px;"><div class="fs-h" style="font-size:clamp(28px,4.5vw,40px); color:{{ p[2] }}; line-height:1;">{{ p[0] }}</div><div style="font-size:13px; color:#a1a1aa; margin-top:8px;">{{ p[1] | t }}</div></div>{% endfor %}
     </div>
     <div style="margin-top:clamp(28px,4vw,40px); background:linear-gradient(120deg,#c6ff3a,#9be000); border-radius:24px; padding:clamp(28px,4vw,44px); text-align:center; color:#0b0b0c; position:relative; overflow:hidden;">
       <div style="position:absolute; top:-30px; right:-10px; font-size:120px; opacity:.12;">🛍️</div>
-      <h2 class="fs-h" style="font-size:clamp(26px,4.5vw,44px); margin:0 0 10px; line-height:.95;">No te quedes fuera de la tendencia</h2>
-      <p style="font-size:clamp(14px,2vw,17px); margin:0 auto 22px; max-width:480px; font-weight:500; opacity:.85;">Lo que hoy es viral, mañana está agotado. Llévatelo antes que el resto.</p>
-      <a href="{{ coll.url | default: routes.all_products_collection_url }}" style="display:inline-block; background:#0b0b0c; color:#c6ff3a; border-radius:14px; padding:16px 34px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase;">Empezar a comprar →</a>
+      <h2 class="fs-h" style="font-size:clamp(26px,4.5vw,44px); margin:0 0 10px; line-height:.95;">{{ 'home.cta_title' | t }}</h2>
+      <p style="font-size:clamp(14px,2vw,17px); margin:0 auto 22px; max-width:480px; font-weight:500; opacity:.85;">{{ 'home.cta_subtitle' | t }}</p>
+      <a href="{{ coll.url | default: routes.all_products_collection_url }}" style="display:inline-block; background:#0b0b0c; color:#c6ff3a; border-radius:14px; padding:16px 34px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase;">{{ 'home.cta_button' | t }} →</a>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer style="border-top:1px solid #1d1d20; position:relative; z-index:1;">
     <div class="fs-w" style="padding-top:clamp(28px,4vw,40px); padding-bottom:clamp(28px,4vw,40px); display:flex; flex-wrap:wrap; gap:24px; justify-content:space-between;">
-      <div><div class="fs-h" style="font-size:24px; margin-bottom:6px;"><span style="color:#c6ff3a;">F</span>store<span style="color:#ff2e6e;">.</span></div><p style="font-size:13px; color:#7a7a82; margin:0; max-width:280px;">Lo que todo el mundo está viendo en TikTok, en un solo sitio.</p></div>
+      <div><div class="fs-h" style="font-size:24px; margin-bottom:6px;"><span style="color:#c6ff3a;">F</span>store<span style="color:#ff2e6e;">.</span></div><p style="font-size:13px; color:#7a7a82; margin:0; max-width:280px;">{{ 'home.footer_tagline' | t }}</p></div>
       <div style="display:flex; gap:28px; font-size:13px; color:#a1a1aa; flex-wrap:wrap;">
-        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">Tienda</strong><a href="{{ routes.all_products_collection_url }}">Trending</a><a href="{{ routes.all_products_collection_url }}">Novedades</a><a href="{{ routes.cart_url }}">Carrito</a></div>
-        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">Ayuda</strong><a href="#">Envíos</a><a href="#">Devoluciones</a><a href="#">Contacto</a></div>
-        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">Síguenos</strong><a href="#">TikTok</a><a href="#">Instagram</a><a href="#">YouTube</a></div>
+        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">{{ 'home.footer_shop' | t }}</strong><a href="{{ routes.all_products_collection_url }}">{{ 'home.nav_trending' | t }}</a><a href="{{ routes.all_products_collection_url }}">{{ 'home.footer_new' | t }}</a><a href="{{ routes.cart_url }}">{{ 'home.footer_cart' | t }}</a></div>
+        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">{{ 'home.footer_help' | t }}</strong><a href="#">{{ 'home.footer_shipping' | t }}</a><a href="#">{{ 'home.footer_returns' | t }}</a><a href="#">{{ 'home.footer_contact' | t }}</a></div>
+        <div style="display:flex; flex-direction:column; gap:9px;"><strong style="color:#fff;">{{ 'home.footer_follow' | t }}</strong><a href="#">TikTok</a><a href="#">Instagram</a><a href="#">YouTube</a></div>
       </div>
     </div>
-    <div class="fs-w" style="padding-bottom:26px; padding-top:20px; border-top:1px solid #1d1d20; font-size:12px; color:#56565d; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;"><span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. Todos los derechos reservados.</span><span>💳 Visa · Mastercard · PayPal · Bizum · Apple Pay</span></div>
+    <div class="fs-w" style="padding-bottom:26px; padding-top:20px; border-top:1px solid #1d1d20; font-size:12px; color:#56565d; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;"><span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'home.rights_reserved' | t }}</span><span>💳 Visa · Mastercard · PayPal · Bizum · Apple Pay</span></div>
   </footer>
 </div>
 
@@ -192,11 +192,11 @@
   document.addEventListener('click', function(e){
     var b=e.target.closest('.fs-add'); if(!b) return;
     var id=b.getAttribute('data-id'); if(!id||id==='') return;
-    var t=b.textContent; b.textContent='Añadiendo…'; b.disabled=true;
+    var t=b.textContent; b.textContent={{ 'home.js_adding' | t | json }}; b.disabled=true;
     fetch('/cart/add.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,quantity:1})})
       .then(function(r){ if(!r.ok) throw 0; return r.json(); })
       .then(function(){ window.location.href='/cart'; })
-      .catch(function(){ b.textContent=t; b.disabled=false; alert('No se pudo añadir. Inténtalo de nuevo.'); });
+      .catch(function(){ b.textContent=t; b.disabled=false; alert({{ 'home.js_add_error' | t | json }}); });
   });
 })();
 </script>

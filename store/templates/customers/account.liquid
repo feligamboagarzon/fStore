@@ -1,0 +1,204 @@
+{% layout 'checkout' %}
+{% comment %} Fstore Cuenta — split-screen account dashboard, real customer object. {% endcomment %}
+{%- assign last_order = customer.orders.first -%}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  .fsa{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; display:flex; flex-wrap:wrap; }
+  .fsa a{ color:inherit; text-decoration:none; }
+  .fsa-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.025em; }
+  .fsa-num{ font-variant-numeric:tabular-nums; }
+  .fsa-tile:hover{ border-color:#3a3a40; background:#16161a; }
+  .fsa-orow:hover{ border-color:#3a3a40; }
+  .fsa-link:hover{ color:#d4ff5e; }
+  .fsa-logout:hover{ border-color:#ff2e6e; color:#ff7aa6; }
+  .fsa-ghost{ display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#151517; border:1px solid #26262b; border-radius:12px; padding:11px 18px; font-weight:600; font-size:14px; color:#e7e7e9; transition:border-color .12s ease, background .12s ease, color .12s ease; }
+  .fsa-ghost:hover{ border-color:#c6ff3a; background:#1b1b1e; }
+  .fsa-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:13px; padding:15px 28px; font-family:'Archivo',sans-serif; font-weight:900; font-size:16px; text-transform:uppercase; letter-spacing:-.01em; cursor:pointer; box-shadow:0 6px 0 #7fae00; transition:background .12s ease; }
+  .fsa-btn:hover{ background:#d4ff5e; }
+  .fsa-btn:active{ transform:translateY(3px); box-shadow:0 3px 0 #7fae00; }
+  .fsa-pag a:hover{ border-color:#c6ff3a; color:#c6ff3a; }
+  @media (prefers-reduced-motion: reduce){ .fsa *{ animation-duration:.001ms !important; } }
+</style>
+
+<div class="fsa">
+
+  <!-- ============ LEFT BRAND PANEL ============ -->
+  <div style="flex:1 1 420px; min-width:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#13150c,#0d0d0e 60%); border-right:1px solid #1d1d20; padding:clamp(28px,4vw,52px); display:flex; flex-direction:column;">
+    <div style="position:absolute; top:-140px; right:-120px; width:420px; height:420px; background:radial-gradient(circle at center, rgba(198,255,58,.16), transparent 65%); pointer-events:none;"></div>
+    <a href="{{ routes.root_url }}" class="fsa-h" style="position:relative; font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+
+    <div style="position:relative; margin-top:auto; padding-top:40px;">
+      <h2 class="fsa-h" style="font-size:clamp(28px,3.6vw,40px); line-height:.98; margin:0 0 22px; max-width:380px;">{{ 'account.brand_headline' | t }}</h2>
+      <div style="display:flex; flex-direction:column; gap:14px; max-width:360px;">
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">📦</span><span style="font-size:14px; color:#d4d4db;">{{ 'account.perk_track' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">❤️</span><span style="font-size:14px; color:#d4d4db;">{{ 'account.perk_wishlist' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">🎟️</span><span style="font-size:14px; color:#d4d4db;">{{ 'account.perk_drops' | t }}</span></div>
+      </div>
+    </div>
+
+    <div style="position:relative; margin-top:36px; display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.03); border:1px solid #232328; border-radius:14px; padding:14px 16px; max-width:380px;">
+      <div class="fsa-h" style="width:40px; height:40px; flex:none; border-radius:50%; background:#ff2e6e; color:#fff; display:flex; align-items:center; justify-content:center;">L</div>
+      <div><div style="color:#d4ee5a; font-size:12px; letter-spacing:1px;">★★★★★</div><div style="font-size:13px; color:#cfcfd4; line-height:1.4; margin-top:2px;">{{ 'account.testimonial' | t }}</div></div>
+    </div>
+  </div>
+
+  <!-- ============ RIGHT ACCOUNT AREA ============ -->
+  <div style="flex:1 1 520px; min-width:0; display:flex; justify-content:center; padding:clamp(24px,4vw,52px); position:relative;">
+    <div style="width:100%; max-width:560px;">
+
+      <!-- HEADER ROW -->
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:26px;">
+        <div class="fsa-h" style="width:54px; height:54px; flex:none; border-radius:50%; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:24px;">{{ customer.first_name | slice: 0 | upcase | default: 'F' }}</div>
+        <div style="min-width:0; flex:1;">
+          <div style="font-size:13px; color:#8a8a91;">{{ 'account.greeting' | t }} 👋</div>
+          <div class="fsa-h" style="font-size:22px; line-height:1.05; margin-top:2px;">{{ customer.first_name | default: customer.name }}</div>
+        </div>
+        <a href="{{ routes.account_logout_url }}" class="fsa-ghost fsa-logout">{{ 'account.logout' | t }} ↩</a>
+      </div>
+
+      {% if customer.orders.size > 0 and last_order %}
+      <!-- ACTIVE ORDER TRACKING -->
+      <div style="background:#121214; border:1px solid #232328; border-radius:16px; padding:18px; margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+          <div>
+            <div style="font-size:12px; color:#8a8a91; margin-bottom:3px;">{{ 'account.active_order' | t }}</div>
+            <a href="{{ last_order.customer_url | default: last_order.url }}" class="fsa-h fsa-link" style="font-size:18px; color:#c6ff3a; transition:color .12s ease;">{{ last_order.name }}</a>
+          </div>
+          {% if last_order.fulfillment_status_label %}
+            <span class="fsa-h" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; font-size:11px; letter-spacing:.03em; background:rgba(37,244,238,.13); color:#25f4ee;">🚚 {{ last_order.fulfillment_status_label }}</span>
+          {% else %}
+            <span class="fsa-h" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; font-size:11px; letter-spacing:.03em; background:rgba(198,255,58,.14); color:#c6ff3a;">⚡ {{ last_order.financial_status_label }}</span>
+          {% endif %}
+        </div>
+
+        <!-- 4-STEP TRACKER -->
+        {% assign step_icons = '✓,✓,🚚,🏠' | split: ',' %}
+        {% assign step_keys = 'account.step_confirmed,account.step_prepared,account.step_shipping,account.step_delivered' | split: ',' %}
+        {%- if last_order.fulfillment_status == 'fulfilled' -%}{%- assign active = 4 -%}
+        {%- elsif last_order.fulfillment_status_label -%}{%- assign active = 3 -%}
+        {%- elsif last_order.financial_status == 'paid' -%}{%- assign active = 2 -%}
+        {%- else -%}{%- assign active = 1 -%}{%- endif -%}
+        <div style="display:flex; align-items:flex-start;">
+          {% for icon in step_icons %}
+            {%- assign n = forloop.index -%}
+            {%- if n <= active -%}{%- assign dotbg = '#c6ff3a' -%}{%- assign dotfg = '#0b0b0c' -%}{%- assign lab = '#e7e7e9' -%}
+            {%- else -%}{%- assign dotbg = '#1d1d20' -%}{%- assign dotfg = '#56565d' -%}{%- assign lab = '#56565d' -%}{%- endif -%}
+            <div style="flex:1; min-width:0; text-align:center; position:relative;">
+              {% unless forloop.first %}<div style="position:absolute; top:13px; left:-50%; width:100%; height:2px; background:{% if n <= active %}#c6ff3a{% else %}#1d1d20{% endif %};"></div>{% endunless %}
+              <div style="position:relative; z-index:1; width:28px; height:28px; margin:0 auto; border-radius:50%; background:{{ dotbg }}; color:{{ dotfg }}; display:flex; align-items:center; justify-content:center; font-size:14px;">{{ icon }}</div>
+              <div style="font-size:10px; color:{{ lab }}; margin-top:7px; letter-spacing:.01em;">{{ step_keys[forloop.index0] | t }}</div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top:16px; font-size:13px; color:#a1a1aa;">{{ 'account.estimated_delivery' | t }} <strong style="color:#c6ff3a;">{{ last_order.created_at | date: '%d %b' }} – {{ last_order.created_at | date: '%d %b' }}</strong></div>
+      </div>
+      {% endif %}
+
+      <!-- QUICK ACTION TILES 2x2 -->
+      <div style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:18px;">
+        <a href="#fsa-orders" class="fsa-tile" style="background:#121214; border:1px solid #232328; border-radius:14px; padding:16px; transition:border-color .12s ease, background .12s ease;">
+          <div style="font-size:22px; margin-bottom:8px;">📦</div>
+          <div class="fsa-h" style="font-size:15px;">{{ 'account.tile_orders' | t }}</div>
+          <div class="fsa-num" style="font-size:12px; color:#8a8a91; margin-top:3px;">{{ 'account.tile_orders_count' | t: count: customer.orders_count | default: 0 }}</div>
+        </a>
+        <a href="{{ routes.all_products_collection_url }}" class="fsa-tile" style="background:#121214; border:1px solid #232328; border-radius:14px; padding:16px; transition:border-color .12s ease, background .12s ease;">
+          <div style="font-size:22px; margin-bottom:8px;">❤️</div>
+          <div class="fsa-h" style="font-size:15px;">{{ 'account.tile_favorites' | t }}</div>
+          <div style="font-size:12px; color:#8a8a91; margin-top:3px;">{{ 'account.tile_favorites_sub' | t }}</div>
+        </a>
+        <a href="{{ routes.account_addresses_url }}" class="fsa-tile" style="background:#121214; border:1px solid #232328; border-radius:14px; padding:16px; transition:border-color .12s ease, background .12s ease;">
+          <div style="font-size:22px; margin-bottom:8px;">📍</div>
+          <div class="fsa-h" style="font-size:15px;">{{ 'account.tile_addresses' | t }}</div>
+          <div class="fsa-num" style="font-size:12px; color:#8a8a91; margin-top:3px;">{{ 'account.tile_addresses_count' | t: count: customer.addresses_count | default: 0 }}</div>
+        </a>
+        <a href="{{ routes.all_products_collection_url }}" class="fsa-tile" style="background:#121214; border:1px solid #232328; border-radius:14px; padding:16px; transition:border-color .12s ease, background .12s ease;">
+          <div style="font-size:22px; margin-bottom:8px;">🎟️</div>
+          <div class="fsa-h" style="font-size:15px;">{{ 'account.tile_coupons' | t }}</div>
+          <div style="font-size:12px; color:#8a8a91; margin-top:3px;">{{ 'account.tile_coupons_sub' | t }}</div>
+        </a>
+      </div>
+
+      <!-- FULL ORDERS LIST -->
+      <div id="fsa-orders" style="background:#121214; border:1px solid #232328; border-radius:16px; padding:clamp(16px,3vw,22px); margin-bottom:18px;">
+        <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+          <h2 class="fsa-h" style="font-size:clamp(18px,2.6vw,24px); margin:0;">📦 {{ 'account.orders_title' | t }}</h2>
+          <span style="font-size:13px; color:#8a8a91;">{{ 'account.orders_subtitle' | t }}</span>
+        </div>
+
+        {% paginate customer.orders by 10 %}
+          {% if customer.orders.size > 0 %}
+            <div style="display:flex; flex-direction:column; gap:11px;">
+              {% for order in customer.orders %}
+                <a href="{{ order.customer_url | default: order.url }}" class="fsa-orow" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:#151517; border:1px solid #232328; border-radius:14px; padding:14px 16px; transition:border-color .12s ease;">
+                  <div style="flex:1 1 140px; min-width:0;">
+                    <div class="fsa-h" style="font-size:15px; color:#c6ff3a;">{{ order.name }}</div>
+                    <div class="fsa-num" style="font-size:12px; color:#8a8a91; margin-top:3px;">{{ order.created_at | date: '%d %b %Y' }}</div>
+                  </div>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <span class="fsa-h" style="display:inline-block; padding:4px 10px; border-radius:999px; font-size:10px; letter-spacing:.03em;
+                      {%- if order.financial_status == 'paid' %} background:rgba(198,255,58,.14); color:#c6ff3a;
+                      {%- elsif order.financial_status == 'pending' %} background:rgba(255,46,110,.14); color:#ff7aa6;
+                      {%- else %} background:#1d1d20; color:#a1a1aa;{% endif -%}">{{ order.financial_status_label }}</span>
+                    {% if order.fulfillment_status_label %}
+                      <span class="fsa-h" style="display:inline-block; padding:4px 10px; border-radius:999px; font-size:10px; letter-spacing:.03em; background:rgba(37,244,238,.13); color:#25f4ee;">{{ order.fulfillment_status_label }}</span>
+                    {% else %}
+                      <span class="fsa-h" style="display:inline-block; padding:4px 10px; border-radius:999px; font-size:10px; letter-spacing:.03em; background:#1d1d20; color:#8a8a91;">{{ 'account.status_pending' | t }}</span>
+                    {% endif %}
+                  </div>
+                  <span class="fsa-num fsa-h" style="font-size:15px; color:#f5f5f4; white-space:nowrap;">{{ order.total_net_amount | money | default: order.total_price | money }}</span>
+                  <span class="fsa-link fsa-h" style="font-size:12px; color:#c6ff3a; white-space:nowrap; transition:color .12s ease;">{{ 'account.view_order' | t }} →</span>
+                </a>
+              {% endfor %}
+            </div>
+
+            {% if paginate.pages > 1 %}
+              <div class="fsa-pag" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:20px;">
+                {% for part in paginate.parts %}
+                  {% if part.is_link %}
+                    <a href="{{ part.url }}" class="fsa-num" style="display:inline-flex; align-items:center; justify-content:center; min-width:38px; padding:8px 11px; background:#151517; border:1px solid #26262b; border-radius:11px; font-weight:700; font-size:14px; color:#d6d6db; transition:border-color .12s ease, color .12s ease;">{{ part.title }}</a>
+                  {% else %}
+                    <span class="fsa-num" style="display:inline-flex; align-items:center; justify-content:center; min-width:38px; padding:8px 11px; background:#c6ff3a; color:#0b0b0c; border:1px solid #c6ff3a; border-radius:11px; font-weight:800; font-size:14px;">{{ part.title }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+          {% else %}
+            <!-- EMPTY STATE -->
+            <div style="text-align:center; padding:clamp(28px,5vw,44px) 16px;">
+              <div style="font-size:48px; margin-bottom:12px;">🛍️</div>
+              <h3 class="fsa-h" style="font-size:clamp(18px,3vw,24px); margin:0 0 8px;">{{ 'account.empty_title' | t }}</h3>
+              <p style="font-size:14px; color:#a1a1aa; max-width:340px; margin:0 auto 22px;">{{ 'account.empty_body' | t }}</p>
+              <a href="{{ routes.root_url }}" class="fsa-btn">{{ 'account.empty_cta' | t }} 🔥</a>
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+
+      <!-- DEFAULT ADDRESS CARD -->
+      <div style="background:#121214; border:1px solid #232328; border-radius:16px; padding:clamp(16px,3vw,22px); margin-bottom:18px;">
+        <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+          <h2 class="fsa-h" style="font-size:clamp(16px,2.4vw,20px); margin:0;">📍 {{ 'account.address_title' | t }}</h2>
+          <span style="font-size:13px; color:#8a8a91;">{{ 'account.address_subtitle' | t }}</span>
+        </div>
+        {% if customer.default_address %}
+          <div style="background:#151517; border:1px solid #232328; border-radius:14px; padding:16px; font-size:14px; line-height:1.7; color:#d6d6db;">
+            {{ customer.default_address | format_address }}
+          </div>
+        {% else %}
+          <div style="background:#151517; border:1px solid #232328; border-radius:14px; padding:16px; font-size:14px; color:#8a8a91;">
+            {{ 'account.address_empty' | t }}
+          </div>
+        {% endif %}
+        <a href="{{ routes.account_addresses_url }}" class="fsa-ghost" style="margin-top:14px; width:100%;">{{ 'account.manage_addresses' | t }} →</a>
+      </div>
+
+      <!-- FOOTER CTA -->
+      <a href="{{ routes.all_products_collection_url }}" class="fsa-btn" style="width:100%;">{{ 'account.keep_shopping' | t }} 🔥</a>
+
+      <div style="text-align:center; font-size:12px; color:#56565d; margin-top:26px;">🔒 {{ 'account.secure_note' | t }}</div>
+    </div>
+  </div>
+</div>

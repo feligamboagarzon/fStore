@@ -1,0 +1,116 @@
+{% layout 'checkout' %}
+{% comment %} Fstore Nosotros (About) — Claude Design recreated as alternate page template (suffix "about"). Mostly static marketing copy. {% endcomment %}
+{%- assign shop_url = routes.all_products_collection_url | default: '/collections/all' -%}
+<style>
+  *{ box-sizing:border-box; }
+  ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  @keyframes fs-marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  @keyframes fs-pulse{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(.7); } }
+  @keyframes fs-float{ 0%,100%{ transform:translateY(0) rotate(var(--r,0deg)); } 50%{ transform:translateY(-9px) rotate(var(--r,0deg)); } }
+  .fa{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; overflow-x:hidden; position:relative; }
+  .fa a{ color:inherit; text-decoration:none; }
+  .fa-w{ max-width:1100px; margin:0 auto; padding-left:clamp(16px,4vw,40px); padding-right:clamp(16px,4vw,40px); position:relative; z-index:1; }
+  .fa-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.03em; }
+  .fa-nav a:hover{ color:#c6ff3a; }
+  .fa-card{ transition:border-color .18s, transform .18s; }
+  .fa-card:hover{ border-color:#3a3a40; transform:translateY(-3px); }
+  .fa-cta:hover{ background:#1a1a1d; }
+  @media (prefers-reduced-motion: reduce){ .fa *{ animation-duration:.001ms !important; transition:none !important; } }
+</style>
+
+<div class="fa">
+  <div style="position:absolute; top:-160px; left:50%; transform:translateX(-50%); width:760px; height:480px; background:radial-gradient(ellipse at center, rgba(198,255,58,.15), transparent 65%); pointer-events:none; z-index:0;"></div>
+
+  <!-- HEADER -->
+  <header style="position:sticky; top:0; z-index:20; background:rgba(11,11,12,.82); backdrop-filter:blur(14px); border-bottom:1px solid #1d1d20;">
+    <div class="fa-w" style="display:flex; align-items:center; gap:18px; padding-top:12px; padding-bottom:12px;">
+      <a href="{{ routes.root_url }}" class="fa-h" style="font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+      <nav class="fa-nav" style="display:flex; align-items:center; gap:22px; margin-left:auto; font-size:14px; font-weight:500;">
+        <a href="{{ shop_url }}" style="color:#cfcfd4;">{{ 'about.nav_shop' | t }}</a>
+        <a href="{{ request.path }}" style="color:#c6ff3a; font-weight:700;">{{ 'about.nav_about' | t }}</a>
+        <a href="{{ routes.cart_url }}" style="display:flex; align-items:center; gap:8px; background:#c6ff3a; color:#0b0b0c; border-radius:999px; padding:10px 16px; font-family:'Archivo',sans-serif; font-weight:800;">🛒 <span style="font-variant-numeric:tabular-nums;">{{ cart.item_count }}</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="fa-w" style="max-width:860px; text-align:center; padding-top:clamp(40px,7vw,80px); padding-bottom:clamp(28px,4vw,48px);">
+    <div style="display:inline-flex; align-items:center; gap:9px; background:#151517; border:1px solid #26262b; color:#d6d6db; font-size:13px; font-weight:600; padding:8px 15px; border-radius:999px; margin-bottom:24px;"><span style="width:8px;height:8px;border-radius:50%;background:#c6ff3a;animation:fs-pulse 1.3s infinite;"></span> {{ 'about.hero_badge' | t }}</div>
+    <h1 class="fa-h" style="font-size:clamp(38px,8vw,82px); line-height:.9; margin:0 0 22px;">{{ 'about.hero_title_html' | t }}</h1>
+    <p style="font-size:clamp(16px,2.4vw,20px); color:#b8b8bf; line-height:1.55; max-width:620px; margin:0 auto;">{{ 'about.hero_lede_html' | t }}</p>
+  </section>
+
+  <!-- MARQUEE -->
+  <div style="background:#c6ff3a; color:#0b0b0c; overflow:hidden; white-space:nowrap; position:relative; z-index:2; border-top:2px solid #0b0b0c; border-bottom:2px solid #0b0b0c; margin-top:clamp(8px,2vw,18px);">
+    <div style="display:inline-flex; gap:28px; padding:10px 0; font-family:'Archivo',sans-serif; font-weight:800; font-size:13px; letter-spacing:.04em; text-transform:uppercase; animation:fs-marquee 24s linear infinite;">
+      {% for i in (1..2) %}<span>🔥 {{ 'about.marquee_products' | t }}</span><span>★</span><span>📦 {{ 'about.marquee_orders' | t }}</span><span>★</span><span>⭐ {{ 'about.marquee_rating' | t }}</span><span>★</span><span>🌍 {{ 'about.marquee_shipping' | t }}</span><span>★</span>{% endfor %}
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <section class="fa-w" style="padding-top:clamp(32px,5vw,56px); padding-bottom:clamp(8px,2vw,16px);">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; text-align:center;">
+      {% assign stats = '+500|about.stat_products|#c6ff3a,+12.000|about.stat_orders|#ffffff,4,8★|about.stat_rating|#25f4ee,24–72h|about.stat_delivery|#ff2e6e' | split: ',' %}
+      {% for s in stats %}{% assign p = s | split: '|' %}<div class="fa-card" style="background:#121214; border:1px solid #232328; border-radius:18px; padding:26px 14px;"><div class="fa-h" style="font-size:clamp(28px,4.5vw,42px); color:{{ p[2] }}; line-height:1;">{{ p[0] }}</div><div style="font-size:13px; color:#a1a1aa; margin-top:9px;">{{ p[1] | t }}</div></div>{% endfor %}
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="fa-w" style="max-width:760px; padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(20px,3vw,32px);">
+    <div class="fa-h" style="font-size:13px; letter-spacing:.08em; color:#c6ff3a; margin-bottom:14px;">{{ 'about.story_eyebrow' | t }}</div>
+    <h2 class="fa-h" style="font-size:clamp(28px,5vw,46px); line-height:.95; margin:0 0 24px;">{{ 'about.story_title' | t }}</h2>
+    <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.65; margin:0 0 18px;">{{ 'about.story_p1' | t }}</p>
+    <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.65; margin:0 0 18px;">{{ 'about.story_p2_html' | t }}</p>
+    <p style="font-size:clamp(15px,2.2vw,18px); color:#b8b8bf; line-height:1.65; margin:0;">{{ 'about.story_p3' | t }}</p>
+  </section>
+
+  <!-- VALUES -->
+  <section class="fa-w" style="padding-top:clamp(32px,5vw,56px); padding-bottom:clamp(16px,2vw,24px);">
+    <h2 class="fa-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 24px;">{{ 'about.values_title' | t }}</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
+      {% assign vals = '🔍|rgba(198,255,58,.14)|about.value1_title|about.value1_body,⚡|rgba(37,244,238,.14)|about.value2_title|about.value2_body,🛡️|rgba(255,46,110,.14)|about.value3_title|about.value3_body' | split: ',' %}
+      {% for v in vals %}{% assign p = v | split: '|' %}<div class="fa-card" style="background:#121214; border:1px solid #232328; border-radius:18px; padding:26px 24px;"><div style="width:50px; height:50px; border-radius:13px; background:{{ p[1] }}; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px;">{{ p[0] }}</div><h3 class="fa-h" style="font-size:18px; letter-spacing:-.01em; margin:0 0 10px;">{{ p[2] | t }}</h3><p style="font-size:14px; color:#a1a1aa; line-height:1.6; margin:0;">{{ p[3] | t }}</p></div>{% endfor %}
+    </div>
+  </section>
+
+  <!-- HOW WE PICK -->
+  <section class="fa-w" style="max-width:860px; padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(16px,2vw,24px);">
+    <h2 class="fa-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 28px;">{{ 'about.steps_title' | t }}</h2>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      {% assign steps = '1|about.step1_title|about.step1_body,2|about.step2_title|about.step2_body,3|about.step3_title|about.step3_body,4|about.step4_title|about.step4_body' | split: ',' %}
+      {% for st in steps %}{% assign p = st | split: '|' %}<div style="display:flex; align-items:center; gap:18px; background:#121214; border:1px solid #232328; border-radius:16px; padding:18px 22px;"><div class="fa-h" style="flex:0 0 auto; width:48px; height:48px; border-radius:50%; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:22px;">{{ p[0] }}</div><div><h3 class="fa-h" style="font-size:17px; letter-spacing:-.01em; margin:0 0 5px;">{{ p[1] | t }}</h3><p style="font-size:14px; color:#a1a1aa; line-height:1.55; margin:0;">{{ p[2] | t }}</p></div></div>{% endfor %}
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="fa-w" style="padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(16px,2vw,24px);">
+    <h2 class="fa-h" style="font-size:clamp(24px,4vw,38px); margin:0 0 8px;">{{ 'about.team_title' | t }}</h2>
+    <p style="font-size:15px; color:#a1a1aa; margin:0 0 24px;">{{ 'about.team_subtitle' | t }}</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px;">
+      {% assign team = '🕵️|Marcos|about.team_role_scout,📦|Elena|about.team_role_logistics,💬|Dani|about.team_role_support,🎬|Carla|about.team_role_content' | split: ',' %}
+      {% for tm in team %}{% assign p = tm | split: '|' %}<div class="fa-card" style="background:#121214; border:1px solid #232328; border-radius:18px; padding:22px 18px; text-align:center;"><div style="aspect-ratio:1/1; border-radius:14px; background:#151517; border:1px solid #26262b; display:flex; align-items:center; justify-content:center; font-size:clamp(38px,7vw,56px); margin-bottom:14px;">{{ p[0] }}</div><h3 class="fa-h" style="font-size:17px; letter-spacing:-.01em; margin:0 0 4px;">{{ p[1] }}</h3><p style="font-size:13px; color:#8a8a91; margin:0;">{{ p[2] | t }}</p></div>{% endfor %}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="fa-w" style="padding-top:clamp(40px,6vw,72px); padding-bottom:clamp(24px,4vw,40px);">
+    <div style="background:linear-gradient(120deg,#c6ff3a,#9be000); border-radius:24px; padding:clamp(30px,5vw,52px); text-align:center; color:#0b0b0c; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-30px; right:-10px; font-size:130px; opacity:.12;">🛍️</div>
+      <h2 class="fa-h" style="font-size:clamp(28px,5vw,48px); line-height:.92; margin:0 0 12px; position:relative;">{{ 'about.cta_title_html' | t }}</h2>
+      <p style="font-size:clamp(14px,2vw,17px); margin:0 auto 26px; max-width:480px; font-weight:500; opacity:.85; position:relative;">{{ 'about.cta_subtitle' | t }}</p>
+      <a href="{{ shop_url }}" class="fa-cta" style="display:inline-block; background:#0b0b0c; color:#c6ff3a; border-radius:14px; padding:17px 34px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase; position:relative;">{{ 'about.cta_button' | t }}</a>
+    </div>
+  </section>
+
+  {% if page.content != blank %}
+  <section class="fa-w" style="padding-bottom:clamp(24px,4vw,40px); font-size:15px; color:#b8b8bf; line-height:1.6;">{{ page.content }}</section>
+  {% endif %}
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid #1d1d20; position:relative; z-index:1;">
+    <div class="fa-w" style="padding-top:clamp(28px,4vw,40px); padding-bottom:clamp(28px,4vw,40px); text-align:center;">
+      <div class="fa-h" style="font-size:24px; margin-bottom:10px;"><span style="color:#c6ff3a;">F</span>store<span style="color:#ff2e6e;">.</span></div>
+      <p style="font-size:12px; color:#56565d; margin:0;">© {{ 'now' | date: '%Y' }} Fstore · {{ 'about.footer_tagline' | t }}</p>
+    </div>
+  </footer>
+</div>

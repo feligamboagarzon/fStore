@@ -1,0 +1,65 @@
+{% layout 'checkout' %}
+{% comment %} Fstore Customer Activate Account — split-screen shell (cuenta mockup). Real Shopify activate_customer_password form. {% endcomment %}
+<style>
+  .fsa *{ box-sizing:border-box; }
+  .fsa ::selection{ background:#c6ff3a; color:#0b0b0c; }
+  .fsa{ background:#0b0b0c; color:#f5f5f4; font-family:'Space Grotesk',sans-serif; min-height:100vh; display:flex; flex-wrap:wrap; }
+  .fsa a{ color:inherit; text-decoration:none; }
+  .fsa-h{ font-family:'Archivo',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:-.025em; }
+  .fsa-input{ width:100%; background:#151517; border:1px solid #2a2a2e; border-radius:11px; padding:14px; color:#f5f5f4; font-size:15px; font-family:'Space Grotesk',sans-serif; outline:none; }
+  .fsa-input:focus{ border-color:#c6ff3a; }
+  .fsa-input::placeholder{ color:#56565d; }
+  .fsa-btn{ width:100%; background:#c6ff3a; color:#0b0b0c; border:none; border-radius:13px; padding:16px; font-family:'Archivo',sans-serif; font-weight:900; font-size:17px; text-transform:uppercase; letter-spacing:-.01em; cursor:pointer; box-shadow:0 5px 0 #7fae00; transition:background .12s; }
+  .fsa-btn:hover{ background:#d4ff5e; }
+  .fsa-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #7fae00; }
+  .fsa-decline{ display:block; width:100%; text-align:center; background:none; border:1px solid #2a2a2e; border-radius:13px; padding:14px; color:#a1a1aa; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; cursor:pointer; text-decoration:none; transition:border-color .12s, color .12s; }
+  .fsa-decline:hover{ border-color:#ff2e6e; color:#ff9cba; }
+  @media (prefers-reduced-motion: reduce){ .fsa *{ animation-duration:.001ms !important; transition:none !important; } }
+</style>
+
+<div class="fsa">
+
+  <!-- LEFT BRAND PANEL -->
+  <div style="flex:1 1 420px; min-width:0; position:relative; overflow:hidden; background:linear-gradient(160deg,#13150c,#0d0d0e 60%); border-right:1px solid #1d1d20; padding:clamp(28px,4vw,52px); display:flex; flex-direction:column;">
+    <div style="position:absolute; top:-140px; right:-120px; width:420px; height:420px; background:radial-gradient(circle at center, rgba(198,255,58,.16), transparent 65%); pointer-events:none;"></div>
+    <a href="{{ routes.root_url }}" class="fsa-h" style="position:relative; font-size:26px; letter-spacing:-.03em; display:flex; align-items:center; gap:2px;"><span style="color:#c6ff3a;">F</span><span>store</span><span style="color:#ff2e6e;">.</span></a>
+    <div style="position:relative; margin-top:auto; padding-top:40px;">
+      <h2 class="fsa-h" style="font-size:clamp(28px,3.6vw,40px); line-height:.98; letter-spacing:-.03em; margin:0 0 22px; max-width:380px;">{{ 'auth.activate_hero' | t }}</h2>
+      <div style="display:flex; flex-direction:column; gap:14px; max-width:360px;">
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">🎁</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_first_order_discount' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">📦</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_track_orders' | t }}</span></div>
+        <div style="display:flex; align-items:center; gap:13px;"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:#c6ff3a; color:#0b0b0c; display:flex; align-items:center; justify-content:center; font-size:17px;">🔥</span><span style="font-size:14px; color:#d4d4db;">{{ 'auth.perk_early_drops' | t }}</span></div>
+      </div>
+    </div>
+    <div style="position:relative; margin-top:36px; display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.03); border:1px solid #232328; border-radius:14px; padding:14px 16px; max-width:380px;">
+      <div class="fsa-h" style="width:40px; height:40px; flex:none; border-radius:50%; background:#ff2e6e; color:#fff; display:flex; align-items:center; justify-content:center;">L</div>
+      <div><div style="color:#d4ee5a; font-size:12px; letter-spacing:1px;">★★★★★</div><div style="font-size:13px; color:#cfcfd4; line-height:1.4; margin-top:2px;">{{ 'auth.testimonial' | t }}</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM AREA -->
+  <div style="flex:1 1 420px; min-width:0; display:flex; align-items:center; justify-content:center; padding:clamp(24px,4vw,52px); position:relative;">
+    <div style="width:100%; max-width:400px;">
+
+      <h1 class="fsa-h" style="font-size:clamp(28px,4vw,38px); margin:0 0 8px;">{{ 'auth.activate_title' | t }}</h1>
+      <p style="font-size:14px; color:#8a8a91; margin:0 0 26px; line-height:1.5;">{{ 'auth.activate_body' | t }}</p>
+
+      {% form 'activate_customer_password' %}
+        {%- if form.errors -%}
+          <div style="background:rgba(255,46,110,.1); border:1px solid rgba(255,46,110,.4); color:#ff9cba; border-radius:10px; padding:11px 14px; font-size:13px; margin-bottom:16px; line-height:1.4;">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <label style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.password' | t }}</label>
+        <input type="password" name="customer[password]" placeholder="{{ 'auth.password_min_placeholder' | t }}" required class="fsa-input" style="margin-bottom:16px;">
+
+        <label style="display:block; font-size:13px; color:#a1a1aa; margin-bottom:7px;">{{ 'auth.password_confirm' | t }}</label>
+        <input type="password" name="customer[password_confirmation]" placeholder="{{ 'auth.activate_confirm_placeholder' | t }}" required class="fsa-input" style="margin-bottom:18px;">
+
+        <button type="submit" class="fsa-btn" style="margin-bottom:12px;">{{ 'auth.activate_submit' | t }}</button>
+        <button type="submit" name="decline" class="fsa-decline">{{ 'auth.activate_decline' | t }}</button>
+      {% endform %}
+
+      <div style="text-align:center; font-size:12px; color:#56565d; margin-top:26px;">🔒 {{ 'auth.encrypted_safe' | t }}</div>
+    </div>
+  </div>
+</div>

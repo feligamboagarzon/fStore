@@ -1,5 +1,5 @@
 import express from 'express';
-import { productProfit, orderExpectedProfit, isInCurrentMonth } from './lib/compute.js';
+import { productProfit, orderExpectedProfit, isInCurrentMonth, round2 } from './lib/compute.js';
 
 export function createApp({ store, shopify, publicDir }) {
   const app = express();
@@ -39,7 +39,7 @@ export function createApp({ store, shopify, publicDir }) {
         }));
         return { ...ord, lineItems, ...own, expectedProfit, incomplete };
       });
-      res.json({ orders: rows, summary: { total: Math.round(total * 100) / 100, month: Math.round(month * 100) / 100, count: rows.length } });
+      res.json({ orders: rows, summary: { total: round2(total), month: round2(month), count: rows.length } });
     } catch (e) {
       res.status(502).json({ error: e.message });
     }

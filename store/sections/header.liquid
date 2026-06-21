@@ -172,6 +172,39 @@
   .mobile-menu__links a:hover { color: var(--color-muted); }
   .mobile-menu__links a svg { width: 18px; height: 18px; color: var(--color-faint); }
   .mobile-menu__footer { padding: var(--spacing-lg); border-top: 1px solid var(--color-line); }
+
+  /* Language switcher */
+  .lang-switch { position: relative; display: inline-flex; align-items: center; }
+  .lang-switch select {
+    appearance: none; -webkit-appearance: none;
+    background: transparent;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    padding: 7px 26px 7px 12px;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  }
+  .lang-switch select:hover { background: var(--color-bg-subtle); }
+  .lang-switch::after {
+    content: '';
+    position: absolute;
+    right: 11px; top: 50%;
+    width: 6px; height: 6px;
+    border-right: 1.5px solid var(--color-muted);
+    border-bottom: 1.5px solid var(--color-muted);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+  .lang-switch--desktop { display: none; }
+  @media (min-width: 900px) { .lang-switch--desktop { display: inline-flex; } }
+  .lang-switch--mobile { display: flex; width: 100%; margin-top: var(--spacing-md); }
+  .lang-switch--mobile select { width: 100%; text-transform: none; letter-spacing: 0; }
 </style>
 
 <header class="site-header">
@@ -194,6 +227,16 @@
     </div>
 
     <div class="header-right">
+      {%- if localization.available_languages.size > 1 -%}
+        {%- form 'localization', class: 'lang-switch lang-switch--desktop' -%}
+          <input type="hidden" name="return_to" value="{{ request.path }}">
+          <select name="locale_code" onchange="this.form.submit()" aria-label="Language">
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.iso_code | upcase }}</option>
+            {%- endfor -%}
+          </select>
+        {%- endform -%}
+      {%- endif -%}
       <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="icon-btn account-btn" aria-label="Account">
         {% if customer %}
           <span class="account-avatar">{{ customer.first_name | slice: 0 }}</span>
@@ -237,6 +280,16 @@
     <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="btn btn--outline" style="width:100%;">
       {% if customer %}My Account{% else %}Log in / Sign up{% endif %}
     </a>
+    {%- if localization.available_languages.size > 1 -%}
+      {%- form 'localization', class: 'lang-switch lang-switch--mobile' -%}
+        <input type="hidden" name="return_to" value="{{ request.path }}">
+        <select name="locale_code" onchange="this.form.submit()" aria-label="Language">
+          {%- for language in localization.available_languages -%}
+            <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name }}</option>
+          {%- endfor -%}
+        </select>
+      {%- endform -%}
+    {%- endif -%}
   </div>
 </aside>
 
